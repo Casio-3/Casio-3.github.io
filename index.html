@@ -170,7 +170,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2020-11-16 17:17:43 / 修改时间：17:21:51" itemprop="dateCreated datePublished" datetime="2020-11-16T17:17:43+08:00">2020-11-16</time>
+              <time title="创建时间：2020-11-16 17:17:43 / 修改时间：19:30:00" itemprop="dateCreated datePublished" datetime="2020-11-16T17:17:43+08:00">2020-11-16</time>
             </span>
 
           
@@ -184,7 +184,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="Ⅰ-PHP反序列化入门"><a href="#Ⅰ-PHP反序列化入门" class="headerlink" title="Ⅰ. PHP反序列化入门"></a>Ⅰ. PHP反序列化入门</h2><h3 id="1-类与对象"><a href="#1-类与对象" class="headerlink" title="1. 类与对象"></a>1. 类与对象</h3><p><strong>类</strong>是定义一系列<strong>属性</strong>和操作的模板，<strong>对象</strong>就是把<strong>属性</strong>进行实例化，然后交给<strong>类</strong>里面的<strong>方法</strong>进行处理。</p>
+          <h2 id="Ⅰ-PHP反序列化入门"><a href="#Ⅰ-PHP反序列化入门" class="headerlink" title="Ⅰ. PHP反序列化入门"></a>Ⅰ. PHP反序列化入门</h2><h3 id="类与对象"><a href="#类与对象" class="headerlink" title="类与对象"></a>类与对象</h3><p><strong>类</strong>是定义一系列<strong>属性</strong>和操作的模板，<strong>对象</strong>就是把<strong>属性</strong>进行实例化，然后交给<strong>类</strong>里面的<strong>方法</strong>进行处理。</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">people</span></span>&#123;</span><br><span class="line">   <span class="comment">//定义类属性（类似变量）,public 代表可见性（公有）</span></span><br><span class="line">    <span class="keyword">public</span> $name = <span class="string">&#x27;casio3&#x27;</span>;</span><br><span class="line">   <span class="comment">//定义类方法（类似函数）</span></span><br><span class="line">   <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">action</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        <span class="keyword">echo</span> <span class="keyword">$this</span>-&gt;name.<span class="string">&quot; is chasing...\n&quot;</span>;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">$bin = <span class="keyword">new</span> people(); <span class="comment">//根据people类实例化对象</span></span><br><span class="line">$bin-&gt;smile();</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
 
 <p>上述代码定义了一个people类，并在在类中定义了一个public类型的变量name和类方法action。然后实例化一个对象bin，去调用people类里面的action方法，打印出结果。</p>
