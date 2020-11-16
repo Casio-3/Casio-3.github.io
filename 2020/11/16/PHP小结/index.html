@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"casio-3.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Ⅰ. PHP反序列化入门1. 类与对象类是定义一系列属性和操作的模板，对象就是把属性进行实例化，然后交给类里面的方法进行处理。 12345678910111213&lt;?phpclass people&amp;#123;   &#x2F;&#x2F;定义类属性（类似变量）,public 代表可见性（公有）    public $name &#x3D; &amp;#x27;casio3&amp;#x27;;   &#x2F;&#x2F;定义类方法（类似函数）   pub">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PHP小结">
+<meta property="og:url" content="https://casio-3.github.io/2020/11/16/PHP%E5%B0%8F%E7%BB%93/index.html">
+<meta property="og:site_name" content="Where is your love?">
+<meta property="og:description" content="Ⅰ. PHP反序列化入门1. 类与对象类是定义一系列属性和操作的模板，对象就是把属性进行实例化，然后交给类里面的方法进行处理。 12345678910111213&lt;?phpclass people&amp;#123;   &#x2F;&#x2F;定义类属性（类似变量）,public 代表可见性（公有）    public $name &#x3D; &amp;#x27;casio3&amp;#x27;;   &#x2F;&#x2F;定义类方法（类似函数）   pub">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://casio-3.github.io/2020/11/16/PHP%E5%B0%8F%E7%BB%93/1344396-20200929192014515-988100232.png">
+<meta property="og:image" content="https://casio-3.github.io/2020/11/16/PHP%E5%B0%8F%E7%BB%93/%E6%8B%BC%E6%8E%A5.png">
+<meta property="og:image" content="https://casio-3.github.io/2020/11/16/PHP%E5%B0%8F%E7%BB%93/9113969-2d480a43dbaa6085.png">
+<meta property="og:image" content="https://casio-3.github.io/2020/11/16/PHP%E5%B0%8F%E7%BB%93/9113969-c05fee59917a75dd.png">
+<meta property="og:image" content="https://casio-3.github.io/2020/11/16/PHP%E5%B0%8F%E7%BB%93/9113969-e0a11ec0622ed7f6.png">
+<meta property="og:image" content="https://casio-3.github.io/2020/11/16/PHP%E5%B0%8F%E7%BB%93/9113969-6ee8955945515fd5.png">
+<meta property="og:image" content="https://casio-3.github.io/2020/11/16/PHP%E5%B0%8F%E7%BB%93/9113969-b5b4f36a6b7efc78.png">
+<meta property="og:image" content="https://casio-3.github.io/2020/11/16/PHP%E5%B0%8F%E7%BB%93/image-20201107114454626.png">
+<meta property="og:image" content="https://casio-3.github.io/2020/11/16/PHP%E5%B0%8F%E7%BB%93/image-20201107114351130.png">
+<meta property="og:image" content="https://casio-3.github.io/2020/11/16/PHP%E5%B0%8F%E7%BB%93/9113969-ef88a3146ee3ce1a.png">
+<meta property="og:image" content="https://casio-3.github.io/2020/11/16/PHP%E5%B0%8F%E7%BB%93/9113969-f938bae02b940c5c.png">
+<meta property="og:image" content="https://casio-3.github.io/2020/11/16/PHP%E5%B0%8F%E7%BB%93/9113969-98310a34f0023185.png">
+<meta property="og:image" content="https://casio-3.github.io/2020/11/16/PHP%E5%B0%8F%E7%BB%93/9113969-1e8be46c6e152227.png">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/9113969-b3be90c66d887376.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://casio-3.github.io/2020/11/16/PHP%E5%B0%8F%E7%BB%93/9113969-d6934913b7389430.png">
+<meta property="og:image" content="https://casio-3.github.io/2020/11/16/PHP%E5%B0%8F%E7%BB%93/9113969-bd535d8f8d7ca051.png">
+<meta property="og:image" content="https://casio-3.github.io/2020/11/16/PHP%E5%B0%8F%E7%BB%93/1.png">
+<meta property="article:published_time" content="2020-11-16T09:17:43.000Z">
+<meta property="article:modified_time" content="2020-11-16T09:21:51.900Z">
+<meta property="article:author" content="Who">
+<meta property="article:tag" content="PHP">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://casio-3.github.io/2020/11/16/PHP%E5%B0%8F%E7%BB%93/1344396-20200929192014515-988100232.png">
+
+<link rel="canonical" href="https://casio-3.github.io/2020/11/16/PHP%E5%B0%8F%E7%BB%93/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>PHP小结 | Where is your love?</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"><a target="_blank" rel="noopener" href="https://github.com/Casio-3/" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#fff; color:#151513; position: absolute; top: 0; border: 0; left: 0; transform: scale(-1, 1);" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Where is your love?</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://casio-3.github.io/2020/11/16/PHP%E5%B0%8F%E7%BB%93/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Who">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Where is your love?">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          PHP小结
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-11-16 17:17:43 / 修改时间：17:21:51" itemprop="dateCreated datePublished" datetime="2020-11-16T17:17:43+08:00">2020-11-16</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="Ⅰ-PHP反序列化入门"><a href="#Ⅰ-PHP反序列化入门" class="headerlink" title="Ⅰ. PHP反序列化入门"></a>Ⅰ. PHP反序列化入门</h2><h3 id="1-类与对象"><a href="#1-类与对象" class="headerlink" title="1. 类与对象"></a>1. 类与对象</h3><p><strong>类</strong>是定义一系列<strong>属性</strong>和操作的模板，<strong>对象</strong>就是把<strong>属性</strong>进行实例化，然后交给<strong>类</strong>里面的<strong>方法</strong>进行处理。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">people</span></span>&#123;</span><br><span class="line">   <span class="comment">//定义类属性（类似变量）,public 代表可见性（公有）</span></span><br><span class="line">    <span class="keyword">public</span> $name = <span class="string">&#x27;casio3&#x27;</span>;</span><br><span class="line">   <span class="comment">//定义类方法（类似函数）</span></span><br><span class="line">   <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">action</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        <span class="keyword">echo</span> <span class="keyword">$this</span>-&gt;name.<span class="string">&quot; is chasing...\n&quot;</span>;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">$bin = <span class="keyword">new</span> people(); <span class="comment">//根据people类实例化对象</span></span><br><span class="line">$bin-&gt;smile();</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>上述代码定义了一个people类，并在在类中定义了一个public类型的变量name和类方法action。然后实例化一个对象bin，去调用people类里面的action方法，打印出结果。<a id="more"></a></p>
+<h3 id="2-魔术方法"><a href="#2-魔术方法" class="headerlink" title="2. 魔术方法"></a>2. 魔术方法</h3><p><strong>魔术方法</strong>：在触发了某个事件之前或之后，魔法函数会自动调用执行，而其他的普通函数必须手动调用才可以执行。php将所有以<code>__</code>(两个下划线)开头的类方法保留为魔术方法。</p>
+<table>
+<thead>
+<tr>
+<th>方法名</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong><em>__construct</em></strong></td>
+<td>构造函数，在创建对象时候初始化对象，一般用于对变量赋初值</td>
+</tr>
+<tr>
+<td><strong><em>__destruct</em></strong></td>
+<td>析构函数，和构造函数相反，在对象不再被使用时(将所有该对象的引用设为null)或者程序退出时自动调用</td>
+</tr>
+<tr>
+<td><strong><em>__toString</em></strong></td>
+<td>当一个对象被当作一个字符串被调用，把类当作字符串使用时触发，返回值需要为字符串，例如echo打印出对象就会调用此方法</td>
+</tr>
+<tr>
+<td><strong><em>__wakeup()</em></strong></td>
+<td>使用<em>unserialize</em>时触发，反序列化恢复对象之前调用该方法</td>
+</tr>
+<tr>
+<td><strong><em>__sleep()</em></strong></td>
+<td>使用<em>serialize</em>时触发 ，在对象被序列化前自动调用，该函数需要返回以类成员变量名作为元素的数组(该数组里的元素会影响类成员变量是否被序列化。只有出现在该数组元素里的类成员变量才会被序列化)</td>
+</tr>
+<tr>
+<td><strong><em>__destruct()</em></strong></td>
+<td>对象被销毁时触发</td>
+</tr>
+<tr>
+<td><strong><em>__call()</em></strong></td>
+<td>在对象中调用不可访问的方法时触发，即当调用对象中不存在的方法会自动调用该方法</td>
+</tr>
+<tr>
+<td><strong><em>__callStatic()</em></strong></td>
+<td>在静态上下文中调用不可访问的方法时触发</td>
+</tr>
+<tr>
+<td><strong><em>__get()</em></strong></td>
+<td>读取不可访问的属性的值时会被调用（不可访问包括私有属性，或者没有初始化的属性）</td>
+</tr>
+<tr>
+<td><strong><em>__set()</em></strong></td>
+<td>在给不可访问属性赋值时，即在调用私有属性的时候会自动执行</td>
+</tr>
+<tr>
+<td><strong><em>__isset()</em></strong></td>
+<td>当对不可访问属性调用isset()或empty()时触发</td>
+</tr>
+<tr>
+<td><strong><em>__unset()</em></strong></td>
+<td>当对不可访问属性调用unset()时触发</td>
+</tr>
+<tr>
+<td><strong><em>__invoke()</em></strong></td>
+<td>当脚本尝试将对象调用为函数时触发</td>
+</tr>
+</tbody></table>
+<p>额外提一下**<em>__toString**</em>的具体触发场景：</p>
+<blockquote>
+<p>(1) echo($obj) / print($obj) 打印时会触发</p>
+<p>(2) 反序列化对象与字符串连接时</p>
+<p>(3) 反序列化对象参与格式化字符串时</p>
+<p>(4) 反序列化对象与字符串进行==比较时（PHP进行==比较的时候会转换参数类型）</p>
+<p>(5) 反序列化对象参与格式化SQL语句，绑定参数时</p>
+<p>(6) 反序列化对象在经过php字符串函数，如 strlen()、addslashes()时</p>
+<p>(7) 在in_array()方法中，第一个参数是反序列化对象，第二个参数的数组中有toString返回的字符串的时候toString会被调用</p>
+<p>(8) 反序列化的对象作为 class_exists() 的参数的时候</p>
+</blockquote>
+<h3 id="3-php序列化-amp-反序列化"><a href="#3-php序列化-amp-反序列化" class="headerlink" title="3. php序列化&amp;反序列化"></a>3. php序列化&amp;反序列化</h3><p><strong>php序列化（<em>serialize</em>）：</strong>将变量转换为可保存或传输的字符串的过程</p>
+<p><strong>php反序列化（<em>unserialize</em>）：</strong>在适当的时候把这个字符串再转化成原来的变量使用</p>
+<p>这两个过程结合起来，可以轻松地存储和传输数据，使程序更具维护性。</p>
+<p>常见的php序列化和反序列化方式主要有：<em>serialize，unserialize；json_encode，json_decode</em>。</p>
+<p><img src="/2020/11/16/PHP%E5%B0%8F%E7%BB%93/1344396-20200929192014515-988100232.png" alt="img"></p>
+<p>以上是序列化之后的结果，<strong>O</strong>代表是一个对象，<strong>6</strong>是对象<strong>object</strong>的长度，<strong>3</strong>的意思是有三个类属性，后面花括号里的是类属性的内容，<strong>s</strong>表示的是类属性<strong>team</strong>的类型(像<strong>i</strong>就表示整数型)，<strong>4</strong>表示类属性<strong>team</strong>的长度，后面的以此类推。值得一提的是，<u>类方法并不会参与到实例化里面</u>。</p>
+<p>需要注意的是变量受到不同修饰符（<em>public，private，protected</em>）修饰进行序列化时，序列化后变量的长度和名称会发生变化。</p>
+<p>通过对比发现，在受保护的成员前都多了两个字节，受保护的成员在序列化时规则：</p>
+<blockquote>
+<ol>
+<li><p>受<em>private</em>修饰的私有成员，序列化时: \x00 + [私有成员所在类名] + \x00 [变量名]</p>
+</li>
+<li><p>受<em>protected</em>修饰的成员，序列化时：\x00 + * + \x00 + [变量名]</p>
+<p>其中，”\x00”代表ASCII为0的值，即空字节，” * “ 必不可少。</p>
+</li>
+</ol>
+</blockquote>
+<p>空字节构造往往可以用%00来写payload:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">O:6:&quot;object&quot;:3:&#123;s:4:&quot;team&quot;;s:5:&quot;joker&quot;;s:17:&quot;%00object%00team_name&quot;;s:6:&quot;hahaha&quot;;s:13:&quot;%00*%00team_group&quot;;s:6:&quot;biubiu&quot;;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>但是有些时候限制了输入字符的ASCII码范围（比如32~125），%00就不可了。</p>
+<ul>
+<li>于是乎引出一个绕过技巧：<strong>使用大写S支持字符串的编码</strong></li>
+</ul>
+<blockquote>
+<p> 反序列化中为了避免信息丢失，<u>使用大写S支持字符串的编码</u>。php为了更加方便进行反序列化 Payload 的传输与显示(避免丢失某些控制字符等信息)，我们可以在序列化内容中用大写S表示字符串，此时这个字符串就支持将后面的字符串用16进制表示。</p>
+</blockquote>
+<p>使用如下形式的绕过：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">O:11:&quot;FileHandler&quot;:3:&#123;S:5:&quot;\00*\00op&quot;;i:2;S:11:&quot;\00*\00filename&quot;;S:8:&quot;flag.php&quot;;S:10:&quot;\00*\00content&quot;;S:7:&quot;oavinci&quot;;&#125;</span><br><span class="line">O:11:&quot;FileHandler&quot;:3:&#123;S:5:&quot;\00*\00op&quot;;i:2;S:11:&quot;\00*\00filename&quot;;s:57:&quot;php:&#x2F;&#x2F;filter&#x2F;read&#x3D;convert.base64-encode&#x2F;resource&#x3D;flag.php&quot;;S:10:&quot;\00*\00content&quot;;N;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里有个疑惑，如上payload采取十六进制时并没有加\x这种形式，但是我看到有些地方讲这个空字符是在用<code>\x00</code>，在实际遇到的情况中加了x的payload是无效的。下面这个绕过亦然：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">s:4:&quot;user&quot;; -&gt; S:4:&quot;use\72&quot;;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>序列化格式中的字母含义：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">a - array                    b - boolean  </span><br><span class="line">d - double                   i - integer</span><br><span class="line">o - common object            r - reference</span><br><span class="line">s - string                   C - custom object</span><br><span class="line">O - class                    N - null</span><br><span class="line">R - pointer reference        U - unicode string</span><br></pre></td></tr></table></figure>
+
+<p>反序列化就依次根据规则进行反向复原。</p>
+<h3 id="4-php反序列化漏洞（对象注入）"><a href="#4-php反序列化漏洞（对象注入）" class="headerlink" title="4. php反序列化漏洞（对象注入）"></a>4. php反序列化漏洞（对象注入）</h3><p>在反序列化过程中，其功能就类似于创建了一个新的对象（复原一个对象可能更恰当），并赋予其相应的属性值。如果让攻击者操纵任意反序列数据， 那么攻击者就可以实现任意类对象的创建，如果一些类存在一些自动触发的方法（魔术方法），那么就有可能以此为跳板进而攻击系统应用。</p>
+<p>挖掘反序列化漏洞的条件是：</p>
+<blockquote>
+<ol>
+<li><p>代码中有可利用的类，并且类中有**__wakeup()，__sleep()，__destruct()**这类特殊条件下可以自己调用的魔术方法。</p>
+</li>
+<li><p>*unserialize()*函数的参数可控。</p>
+</li>
+</ol>
+</blockquote>
+<p>我就不写实例了，排点细碎</p>
+<ul>
+<li><p>构造恶意payload，对类A的$test的值进行变量覆盖</p>
+</li>
+<li><p>使用伪协议<code>php://filter</code>进行任意文件读取</p>
+</li>
+<li><p>绕过<strong>__wakeup</strong>函数</p>
+<p>CVE-2016-7124漏洞：<strong>当序列化字符串中<u>表示对象属性个数的值大于真实的属性个数</u>时会跳过__wakeup的执行</strong></p>
+</li>
+</ul>
+<h3 id="5-POP链构造"><a href="#5-POP链构造" class="headerlink" title="5. POP链构造"></a>5. POP链构造</h3><blockquote>
+<p><strong>面向属性编程(Property-Oriented Programing)</strong>:常用于上层语言构造特定调用链的方法，与二进制利用中的面向返回编程（Return-Oriented Programing）的原理相似，都是从现有运行环境中寻找一系列的代码或者指令调用，然后根据需求构成一组连续的调用链。在控制代码或者程序的执行流程后就能够使用这一组调用链做一些工作了。</p>
+<p>在二进制利用时，<strong>ROP</strong> 链构造中是寻找当前系统环境中或者内存环境里已经存在的、具有固定地址且带有返回操作的指令集，而 POP 链的构造则是寻找程序当前环境中已经定义了或者能够动态加载的对象中的属性（函数方法），将一些可能的调用组合在一起形成一个完整的、具有目的性的操作。二进制中通常是由于内存溢出控制了指令执行流程，而反序列化过程就是控制代码执行流程的方法之一，当然进行反序列化的数据能够被用户输入所控制。</p>
+<p><strong>POP CHAIN</strong>:把魔术方法作为最开始的小组件，然后在魔术方法中调用其他函数(小组件)，通过寻找相同名字的函数，再与类中的敏感函数和属性关联，就是POP CHAIN。此时类中所有的敏感属性都属于可控的。当<em>unserialize</em>()传入的参数可控，便可以通过反序列化漏洞控制POP CHAIN达到利用特定漏洞的效果。</p>
+</blockquote>
+<ol>
+<li><p>pop链中有用的方法：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">命令执行:exec()、passthru()、popen()、system()</span><br><span class="line">文件操作:file_put_contents()、file_get_contents()、unlink()</span><br><span class="line">代码执行:<span class="keyword">eval</span>()、assert()、call_user_func()</span><br></pre></td></tr></table></figure>
+
+<p>方法介绍：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">exec — 执行一个外部程序</span><br><span class="line">passthru - 同 exec() 函数类似，也是用来执行外部命令</span><br><span class="line">popen — 打开进程文件指针</span><br><span class="line">system — 执行外部程序，并且显示输出</span><br><span class="line">file_put_contents — 将一个字符串写入文件</span><br><span class="line">file_get_contents — 将整个文件读入一个字符串    </span><br><span class="line">unlink — 删除文件</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>反序列化中为了避免信息丢失，使用大写S支持字符串的编码</p>
+</li>
+<li><p>深浅copy</p>
+<p>在php中如果我们使用 &amp; 对变量A的值指向变量B，这个时候是属于浅拷贝，<u>当变量B改变时，变量A也会跟着改变</u>。在被反序列化的对象的某些变量被过滤了，但是其他变量可控的情况下，就可以利用浅拷贝来绕过过滤。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$A = &amp;$B;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>php伪协议</p>
+<p>配合php伪协议实现文件包含、命令执行等漏洞。如glob:// 伪协议查找匹配的文件路径模式。</p>
+</li>
+</ol>
+<h3 id="6-php-Session反序列化（待补充）"><a href="#6-php-Session反序列化（待补充）" class="headerlink" title="6. php Session反序列化（待补充）"></a>6. php Session反序列化（待补充）</h3><h3 id="7-phar伪协议触发反序列化（待补充）"><a href="#7-phar伪协议触发反序列化（待补充）" class="headerlink" title="7. phar伪协议触发反序列化（待补充）"></a>7. phar伪协议触发反序列化（待补充）</h3><h3 id="8-php反序列化对象逃逸"><a href="#8-php反序列化对象逃逸" class="headerlink" title="8. php反序列化对象逃逸"></a>8. php反序列化对象逃逸</h3><p>php中，反序列化的过程中必须严格按照序列化规则才能成功实现反序列化。</p>
+<blockquote>
+<p><strong>反序列化按照一定的序列化规则，但是有一定的识别范围，在这个范围之外（花括号}之后）的字符都会被忽略，不影响反序列化的正常进行</strong>。</p>
+</blockquote>
+<p>于是乎可以考虑如何闭合，贴一张我不太懂的图：</p>
+<p><img src="/2020/11/16/PHP%E5%B0%8F%E7%BB%93/%E6%8B%BC%E6%8E%A5.png" alt="拼接"></p>
+<h3 id="9-php原生类序列化（暂无了解）"><a href="#9-php原生类序列化（暂无了解）" class="headerlink" title="9. php原生类序列化（暂无了解）"></a>9. php原生类序列化（暂无了解）</h3><h2 id="Ⅱ-PHP伪协议与文件包含漏洞"><a href="#Ⅱ-PHP伪协议与文件包含漏洞" class="headerlink" title="Ⅱ. PHP伪协议与文件包含漏洞"></a>Ⅱ. PHP伪协议与文件包含漏洞</h2><h3 id="PHP中支持的伪协议"><a href="#PHP中支持的伪协议" class="headerlink" title="PHP中支持的伪协议"></a>PHP中支持的伪协议</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">file:<span class="comment">// — 访问本地文件系统</span></span><br><span class="line">http:<span class="comment">// — 访问 HTTP(s) 网址</span></span><br><span class="line">ftp:<span class="comment">// — 访问 FTP(s) URLs</span></span><br><span class="line">php:<span class="comment">// — 访问各个输入/输出流（I/O streams）</span></span><br><span class="line">zlib:<span class="comment">// — 压缩流</span></span><br><span class="line">data:<span class="comment">// — 数据（RFC 2397）</span></span><br><span class="line">glob:<span class="comment">// — 查找匹配的文件路径模式</span></span><br><span class="line">phar:<span class="comment">// — PHP 归档</span></span><br><span class="line">ssh2:<span class="comment">// — Secure Shell 2</span></span><br><span class="line">rar:<span class="comment">// — RAR</span></span><br><span class="line">ogg:<span class="comment">// — 音频流</span></span><br><span class="line">expect:<span class="comment">// — 处理交互式的流</span></span><br></pre></td></tr></table></figure>
+
+<p>跳转测试: <a href="#%E4%B8%80%E5%9B%BE%E4%BB%A5%E8%94%BD%E4%B9%8B">用法总结</a> &lt;在**Typora**中利用***anchor***跳转时按住**Ctrl**点击&gt;</p>
+<h4 id="file-协议"><a href="#file-协议" class="headerlink" title="file://协议"></a>file://协议</h4><blockquote>
+<p>PHP.ini：<br>file:// 协议在双off的情况下也可以正常使用；<br>allow_url_fopen ：off/on<br>allow_url_include：off/on</p>
+</blockquote>
+<p><strong>file:// 用于访问本地文件系统，在CTF中通常用来读取本地文件的且不受allow_url_fopen与allow_url_include的影响.</strong></p>
+<p>file.php:</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>($_GET[<span class="string">&#x27;page&#x27;</span>]))</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">include</span> $_GET[<span class="string">&#x27;page&#x27;</span>];</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>file:// [文件的绝对路径和文件名]，payload参考：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http:<span class="comment">//127.0.0.1/file.php?page=file://e:/tool/phpstudy/phptutorial/www/phpinfo.php</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="php-协议"><a href="#php-协议" class="headerlink" title="php://协议"></a>php://协议</h4><blockquote>
+<p>php://filter在双off的情况下也可以正常使用；<br>条件：<br><strong>不需要开启allow_url_fopen，仅php://input、 php://stdin、 php://memory 和 php://temp 需要开启allow_url_include。</strong></p>
+</blockquote>
+<p><strong>php:// 访问各个输入/输出流（I/O streams），在CTF中经常使用的是php://filter和php://input，<u>php://filter用于读取源码，php://input用于执行php代码.</u></strong></p>
+<h5 id="·-php-filter"><a href="#·-php-filter" class="headerlink" title="· php://filter"></a>· php://filter</h5><blockquote>
+<p> <code>php://filter</code> 是一种元封装器， 设计用于数据流打开时的筛选过滤应用。 这对于一体式（all-in-one）的文件函数非常有用，类似 <strong>readfile()**、 **file()</strong> 和 **file_get_contents()**， 在数据流内容读取之前没有机会应用其他过滤器。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">resource&#x3D;&lt;要过滤的数据流&gt;  这个参数是必须的。它指定了你要筛选过滤的数据流。</span><br><span class="line">read&#x3D;&lt;读链的筛选列表&gt;      该参数可选。可以设定一个或多个过滤器名称，以管道符（|）分隔。</span><br><span class="line">write&#x3D;&lt;写链的筛选列表&gt;     该参数可选。可以设定一个或多个过滤器名称，以管道符（|）分隔。</span><br><span class="line">&lt;;两个链的筛选列表&gt;        任何没有以 read&#x3D; 或 write&#x3D; 作前缀的筛选器列表会视情况应用于读或写链。</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>可以运用多种过滤器（字符串/转换/压缩/加密）</strong></p>
+<p><del>有些学的不是太细，要用的时候再说吧。。。</del></p>
+<p>例如用来任意文件读取的payload:</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">php:<span class="comment">//filter/read=convert.base64-encode/resource=upload.php</span></span><br><span class="line">这里读的过滤器为convert.base64-encode，就和字面上的意思一样，把输入流base64-encode，</span><br><span class="line">resource=upload.php，代表读取upload.php的内容</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>&lt;字符串过滤器&gt;</p>
+<p>*<em>string.**</em>是用来处理各个字符串的，比较像python的string模块.</p>
+</li>
+</ul>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">string</span>.rot13</span><br><span class="line">进行rot13转换</span><br><span class="line"><span class="keyword">string</span>.toupper</span><br><span class="line">将字符全部大写</span><br><span class="line"><span class="keyword">string</span>.tolower</span><br><span class="line">将字符全部小写</span><br><span class="line"><span class="keyword">string</span>.strip_tags</span><br><span class="line">去除空字符、HTML 和 PHP 标记后的结果。</span><br><span class="line">功能类似于strip_tags()函数，若不想某些字符不被消除，后面跟上字符，可利用字符串或是数组两种方式。</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>&lt;转换过滤器&gt;</p>
+<p>*<em>convert.**</em> 过滤器是<u>php5.0.0</u>以后添加的.</p>
+</li>
+</ul>
+<p><img src="/2020/11/16/PHP%E5%B0%8F%E7%BB%93/9113969-2d480a43dbaa6085.png" alt="图片.png"></p>
+<ul>
+<li>&lt;压缩过滤器&gt;</li>
+</ul>
+<p><img src="/2020/11/16/PHP%E5%B0%8F%E7%BB%93/9113969-c05fee59917a75dd.png" alt="图片.png"></p>
+<ul>
+<li>&lt;加密过滤器&gt;</li>
+</ul>
+<p><img src="/2020/11/16/PHP%E5%B0%8F%E7%BB%93/9113969-e0a11ec0622ed7f6.png" alt="图片.png"></p>
+<h6 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h6><ol>
+<li><a target="_blank" rel="noopener" href="http://www.w3school.com.cn/php/func_filesystem_file_put_contents.asp">PHP file_put_contents() 函数</a></li>
+</ol>
+<p>xxx.php</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span>  </span><br><span class="line">$filename=$_GET[<span class="string">&quot;a&quot;</span>];  </span><br><span class="line">$data=<span class="string">&quot;test test&quot;</span>;  </span><br><span class="line">file_put_contents($filename, $data);  </span><br><span class="line"><span class="meta">?&gt;</span>  </span><br></pre></td></tr></table></figure>
+
+<p>payload:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http:&#x2F;&#x2F;127.0.0.1&#x2F;xxx.php?a&#x3D;php:&#x2F;&#x2F;filter&#x2F;write&#x3D;string.tolower&#x2F;resource&#x3D;test.php</span><br></pre></td></tr></table></figure>
+
+<p>可以往服务器中写入一个文件内容全为小写且文件名为test.php的文件：<br><img src="/2020/11/16/PHP%E5%B0%8F%E7%BB%93/9113969-6ee8955945515fd5.png" alt="图片.png"></p>
+<ol start="2">
+<li><a target="_blank" rel="noopener" href="http://www.w3school.com.cn/php/func_filesystem_file_get_contents.asp">PHP file_get_contents() 函数</a></li>
+</ol>
+<p>xxx.php</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span>  </span><br><span class="line">$filename=$_GET[<span class="string">&quot;a&quot;</span>];  </span><br><span class="line"><span class="keyword">echo</span> file_get_contents($filename);  </span><br><span class="line"><span class="meta">?&gt;</span>  </span><br></pre></td></tr></table></figure>
+
+<p>payload:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http:&#x2F;&#x2F;127.0.0.1&#x2F;xxx.php?a&#x3D;php:&#x2F;&#x2F;filter&#x2F;convert.base64-encode&#x2F;resource&#x3D;test.php</span><br></pre></td></tr></table></figure>
+
+<p>**file_get_contents()**的$filename参数不仅仅为文件路径，还可以是一个URL（伪协议）。<br>test.php的内容以base64编码的方式显示出来：<br><img src="/2020/11/16/PHP%E5%B0%8F%E7%BB%93/9113969-b5b4f36a6b7efc78.png" alt="图片.png"></p>
+<ol start="3">
+<li><a target="_blank" rel="noopener" href="https://www.w3school.com.cn/php/php_includes.asp">PHP include() 函数</a></li>
+</ol>
+<p>xxx.php</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span>  </span><br><span class="line">$filename=$_GET[<span class="string">&#x27;a&#x27;</span>];</span><br><span class="line">$data=<span class="string">&quot;test test&quot;</span>;</span><br><span class="line"><span class="keyword">include</span>(<span class="string">&quot;<span class="subst">$filename</span>&quot;</span>);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>payload:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http:&#x2F;&#x2F;127.0.0.1&#x2F;xxx.php?a&#x3D;php:&#x2F;&#x2F;filter&#x2F;convert.base64-encode&#x2F;resource&#x3D;test.php</span><br></pre></td></tr></table></figure>
+
+<p>同样可以把test.php的内容以base64编码的方式显示出来.</p>
+<p><font color="blue"><strong>Tips:</strong></font></p>
+<p><u><strong>双引号包含的变量$filename会被当作正常变量执行，而单引号包含的变量则会被当作字符串执行.</strong></u><br>例如：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span>  </span><br><span class="line">$casio3=handsome;</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;<span class="subst">$casio3</span>&quot;</span>;</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;&lt;br&gt;&quot;</span>;</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&#x27;$casio3&#x27;</span>;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>output:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">handsome</span><br><span class="line">$casio3</span><br></pre></td></tr></table></figure>
+
+<p>之前玩一句话木马的编码绕过时学习过，</p>
+<p><img src="/2020/11/16/PHP%E5%B0%8F%E7%BB%93/image-20201107114454626.png" alt="image-20201107114454626"></p>
+<p>看这抹绿色多焦人啊，最开始不懂为什么标识的颜色是这样：</p>
+<p><img src="/2020/11/16/PHP%E5%B0%8F%E7%BB%93/image-20201107114351130.png" alt="image-20201107114351130"></p>
+<h5 id="·-php-input"><a href="#·-php-input" class="headerlink" title="· php://input"></a>· php://input</h5><p><strong>php://input 是个可以访问请求的原始数据的只读流,可以<u>读取到post没有解析的原始数据, 将post请求中的数据作为PHP代码执行</u>。因为它不依赖于特定的 php.ini 指令。<br>注：enctype=”multipart/form-data” 的时候 php://input 是无效的。</strong></p>
+<blockquote>
+<p>allow_url_fopen ：off/on<br>allow_url_include：on</p>
+</blockquote>
+<p>xxx.php</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span>  </span><br><span class="line"><span class="keyword">echo</span> file_get_contents($_GET[<span class="string">&quot;a&quot;</span>]);  </span><br><span class="line"><span class="meta">?&gt;</span>  </span><br></pre></td></tr></table></figure>
+
+<p><img src="/2020/11/16/PHP%E5%B0%8F%E7%BB%93/9113969-ef88a3146ee3ce1a.png" alt="图片.png"><br>但是当PHP代码为：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span>  </span><br><span class="line">$test=$_GET[<span class="string">&#x27;a&#x27;</span>];</span><br><span class="line"><span class="keyword">include</span>($test);</span><br><span class="line"><span class="meta">?&gt;</span>    </span><br></pre></td></tr></table></figure>
+
+<p>并且当远程包含打开的时候（allow_url_include=on),就可以造成任意代码执行。<br>但是在老版hackbar中可以直接被解析:<br><img src="/2020/11/16/PHP%E5%B0%8F%E7%BB%93/9113969-f938bae02b940c5c.png" alt="图片.png"></p>
+<h6 id="实例-1"><a href="#实例-1" class="headerlink" title="实例"></a>实例</h6><p>‘r’参数应该类似fopen，以只读形式读入.</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">$user = $_GET[<span class="string">&quot;user&quot;</span>];</span><br><span class="line">$file = $_GET[<span class="string">&quot;file&quot;</span>];</span><br><span class="line">$pass = $_GET[<span class="string">&quot;pass&quot;</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>($user)&amp;&amp;(file_get_contents($user,<span class="string">&#x27;r&#x27;</span>)===<span class="string">&quot;the user is admin&quot;</span>))&#123;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">&quot;hello admin!&lt;br&gt;&quot;</span>;</span><br><span class="line">    <span class="keyword">include</span>($file); <span class="comment">//class.php</span></span><br><span class="line">&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">&quot;you are not admin ! &quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 解法为  url/index.php?user=php://input  </span></span><br><span class="line"><span class="comment">// [POSTDATA] the user is admin</span></span><br><span class="line"><span class="comment">// 最后输出为hello admin!并且包含对应文件</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h5 id="·-php-output"><a href="#·-php-output" class="headerlink" title="· php://output"></a>· php://output</h5><p><strong>是一个只写的数据流， 允许以 print 和 echo 一样的方式写入到输出缓冲区.</strong></p>
+<h6 id="实例-2"><a href="#实例-2" class="headerlink" title="实例"></a>实例</h6><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span>  </span><br><span class="line">$code=$_GET[<span class="string">&quot;a&quot;</span>];  </span><br><span class="line">file_put_contents($code,<span class="string">&quot;test&quot;</span>);   </span><br><span class="line"><span class="meta">?&gt;</span>  </span><br></pre></td></tr></table></figure>
+
+<p><img src="/2020/11/16/PHP%E5%B0%8F%E7%BB%93/9113969-98310a34f0023185.png" alt="图片.png"></p>
+<h4 id="data-协议"><a href="#data-协议" class="headerlink" title="data://协议"></a>data://协议</h4><p>data:资源类型;编码,内容数据流封装器<br>当allow_url_include 打开的时候，任意文件包含就会成为任意命令执行</p>
+<blockquote>
+<p>PHP.ini：<br>data://协议<strong>必须在双on时才能正常使用</strong><br>allow_url_fopen ：on<br>allow_url_include：on<br>php 版本大于等于 php5.2</p>
+</blockquote>
+<p><strong>注：</strong>查阅PHP手册时写的并不受限于allow_url_open.</p>
+<p>xxx.php</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"> <span class="meta">&lt;?php</span>  </span><br><span class="line">$filename=$_GET[<span class="string">&quot;a&quot;</span>];  </span><br><span class="line"><span class="keyword">include</span>(<span class="string">&quot;<span class="subst">$filename</span>&quot;</span>);  </span><br><span class="line"><span class="meta">?&gt;</span>  </span><br></pre></td></tr></table></figure>
+
+<p>可以</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">http:&#x2F;&#x2F;127.0.0.1&#x2F;xxx.php?a&#x3D;data:&#x2F;&#x2F;text&#x2F;plain,&lt;?php phpinfo()?&gt;</span><br><span class="line">or</span><br><span class="line">http:&#x2F;&#x2F;127.0.0.1&#x2F;xxx.php?a&#x3D;data:&#x2F;&#x2F;text&#x2F;plain;base64,PD9waHAgcGhwaW5mbygpPz4&#x3D;</span><br><span class="line"></span><br><span class="line">或者</span><br><span class="line">http:&#x2F;&#x2F;127.0.0.1&#x2F;cmd.php?file&#x3D;data:text&#x2F;plain,&lt;?php phpinfo()?&gt;</span><br><span class="line">or</span><br><span class="line">http:&#x2F;&#x2F;127.0.0.1&#x2F;cmd.php?file&#x3D;data:text&#x2F;plain;base64,PD9waHAgcGhwaW5mbygpPz4&#x3D;</span><br></pre></td></tr></table></figure>
+
+
+
+<p><img src="/2020/11/16/PHP%E5%B0%8F%E7%BB%93/9113969-1e8be46c6e152227.png" alt="图片.png"></p>
+<h4 id="zip-bzip2-zlib-协议"><a href="#zip-bzip2-zlib-协议" class="headerlink" title="zip://, bzip2://, zlib://协议"></a>zip://, bzip2://, zlib://协议</h4><blockquote>
+<p>PHP.ini：<br>zip://, bzip2://, zlib://协议在<strong>双off</strong>的情况下也可以正常使用；<br>allow_url_fopen ：off/on<br>allow_url_include：off/on</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">3个封装协议，都是直接打开压缩文件。</span><br><span class="line">compress.zlib:&#x2F;&#x2F;file.gz - 处理的是 &#39;.gz&#39; 后缀的压缩包</span><br><span class="line">compress.bzip2:&#x2F;&#x2F;file.bz2 - 处理的是 &#39;.bz2&#39; 后缀的压缩包</span><br><span class="line">zip:&#x2F;&#x2F;archive.zip#dir&#x2F;file.txt - 处理的是 &#39;.zip&#39; 后缀的压缩包里的文件</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>zip://, bzip2://, zlib:// 均属于压缩流，可以访问压缩文件中的子文件，更重要的是不需要指定后缀名.</strong></p>
+<h5 id="·-zip-协议"><a href="#·-zip-协议" class="headerlink" title="· zip://协议"></a>· zip://协议</h5><p>PHP 版本大于等于 <u>PHP 5.3.0</u><br>使用方法：<br><code>zip://archive.zip#dir/file.txt</code><br>zip:// [压缩文件绝对路径]#[压缩文件内的子文件名]<br>要用绝对路径+url编码#</p>
+<p>测试:<br>新建一个名为zip.txt的文件，内容为<code>&lt;?php phpinfo();?&gt;</code>，然后压缩为名为test.zip的zip文件。<strong>如果可以上传zip文件则上传zip文件，若不能则重命名为test.jpg后上传。</strong>其他几种压缩格式也可以这样操作。<br><img src="https://upload-images.jianshu.io/upload_images/9113969-b3be90c66d887376.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="图片.png"><br>更名为jpg，<br>payload:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http:&#x2F;&#x2F;127.0.0.1&#x2F;xxx.php?a&#x3D;zip:&#x2F;&#x2F;C:\Users\nameless\Desktop\test.jpg%23zip.txt</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2020/11/16/PHP%E5%B0%8F%E7%BB%93/9113969-d6934913b7389430.png" alt="图片.png"></p>
+<h5 id="·-bzip2-协议"><a href="#·-bzip2-协议" class="headerlink" title="· bzip2://协议"></a>· bzip2://协议</h5><p><strong>使用方法：</strong><br><code>compress.bzip2://file.bz2</code><br>相对路径也可以</p>
+<p>测试:<br>用7-zip生成一个bz2压缩文件。<br>payload:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http:&#x2F;&#x2F;127.0.0.1&#x2F;xxx.php?a&#x3D;compress.bzip2:&#x2F;&#x2F;C:&#x2F;Users&#x2F;nameless&#x2F;Desktop&#x2F;test.bz2</span><br></pre></td></tr></table></figure>
+
+<p>或者文件改为jpg后缀，</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http:&#x2F;&#x2F;127.0.0.1&#x2F;xxx.php?a&#x3D;compress.bzip2:&#x2F;&#x2F;C:&#x2F;Users&#x2F;nameless&#x2F;Desktop&#x2F;test.jpg</span><br></pre></td></tr></table></figure>
+
+
+
+<p><img src="/2020/11/16/PHP%E5%B0%8F%E7%BB%93/9113969-bd535d8f8d7ca051.png" alt="图片.png"></p>
+<h5 id="·-zlib-协议"><a href="#·-zlib-协议" class="headerlink" title="· zlib://协议"></a>· zlib://协议</h5><p>同上.</p>
+<h4 id="一图以蔽之"><a href="#一图以蔽之" class="headerlink" title="一图以蔽之"></a>一图以蔽之</h4><p><img src="/2020/11/16/PHP%E5%B0%8F%E7%BB%93/1.png" alt="1"></p>
+<h2 id="Ⅲ-PHP变量覆盖漏洞"><a href="#Ⅲ-PHP变量覆盖漏洞" class="headerlink" title="Ⅲ. PHP变量覆盖漏洞"></a>Ⅲ. PHP变量覆盖漏洞</h2>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/PHP/" rel="tag"># PHP</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/09/23/Bloger/" rel="prev" title="Bloger">
+      <i class="fa fa-chevron-left"></i> Bloger
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E2%85%A0-PHP%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%85%A5%E9%97%A8"><span class="nav-number">1.</span> <span class="nav-text">Ⅰ. PHP反序列化入门</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E7%B1%BB%E4%B8%8E%E5%AF%B9%E8%B1%A1"><span class="nav-number">1.1.</span> <span class="nav-text">1. 类与对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E9%AD%94%E6%9C%AF%E6%96%B9%E6%B3%95"><span class="nav-number">1.2.</span> <span class="nav-text">2. 魔术方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-php%E5%BA%8F%E5%88%97%E5%8C%96-amp-%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96"><span class="nav-number">1.3.</span> <span class="nav-text">3. php序列化&amp;反序列化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-php%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%EF%BC%88%E5%AF%B9%E8%B1%A1%E6%B3%A8%E5%85%A5%EF%BC%89"><span class="nav-number">1.4.</span> <span class="nav-text">4. php反序列化漏洞（对象注入）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-POP%E9%93%BE%E6%9E%84%E9%80%A0"><span class="nav-number">1.5.</span> <span class="nav-text">5. POP链构造</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-php-Session%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%EF%BC%88%E5%BE%85%E8%A1%A5%E5%85%85%EF%BC%89"><span class="nav-number">1.6.</span> <span class="nav-text">6. php Session反序列化（待补充）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-phar%E4%BC%AA%E5%8D%8F%E8%AE%AE%E8%A7%A6%E5%8F%91%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%EF%BC%88%E5%BE%85%E8%A1%A5%E5%85%85%EF%BC%89"><span class="nav-number">1.7.</span> <span class="nav-text">7. phar伪协议触发反序列化（待补充）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-php%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%AF%B9%E8%B1%A1%E9%80%83%E9%80%B8"><span class="nav-number">1.8.</span> <span class="nav-text">8. php反序列化对象逃逸</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-php%E5%8E%9F%E7%94%9F%E7%B1%BB%E5%BA%8F%E5%88%97%E5%8C%96%EF%BC%88%E6%9A%82%E6%97%A0%E4%BA%86%E8%A7%A3%EF%BC%89"><span class="nav-number">1.9.</span> <span class="nav-text">9. php原生类序列化（暂无了解）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E2%85%A1-PHP%E4%BC%AA%E5%8D%8F%E8%AE%AE%E4%B8%8E%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E6%BC%8F%E6%B4%9E"><span class="nav-number">2.</span> <span class="nav-text">Ⅱ. PHP伪协议与文件包含漏洞</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#PHP%E4%B8%AD%E6%94%AF%E6%8C%81%E7%9A%84%E4%BC%AA%E5%8D%8F%E8%AE%AE"><span class="nav-number">2.1.</span> <span class="nav-text">PHP中支持的伪协议</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#file-%E5%8D%8F%E8%AE%AE"><span class="nav-number">2.1.1.</span> <span class="nav-text">file:&#x2F;&#x2F;协议</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#php-%E5%8D%8F%E8%AE%AE"><span class="nav-number">2.1.2.</span> <span class="nav-text">php:&#x2F;&#x2F;协议</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%C2%B7-php-filter"><span class="nav-number">2.1.2.1.</span> <span class="nav-text">· php:&#x2F;&#x2F;filter</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%AE%9E%E4%BE%8B"><span class="nav-number">2.1.2.1.1.</span> <span class="nav-text">实例</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%C2%B7-php-input"><span class="nav-number">2.1.2.2.</span> <span class="nav-text">· php:&#x2F;&#x2F;input</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%AE%9E%E4%BE%8B-1"><span class="nav-number">2.1.2.2.1.</span> <span class="nav-text">实例</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%C2%B7-php-output"><span class="nav-number">2.1.2.3.</span> <span class="nav-text">· php:&#x2F;&#x2F;output</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%AE%9E%E4%BE%8B-2"><span class="nav-number">2.1.2.3.1.</span> <span class="nav-text">实例</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#data-%E5%8D%8F%E8%AE%AE"><span class="nav-number">2.1.3.</span> <span class="nav-text">data:&#x2F;&#x2F;协议</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#zip-bzip2-zlib-%E5%8D%8F%E8%AE%AE"><span class="nav-number">2.1.4.</span> <span class="nav-text">zip:&#x2F;&#x2F;, bzip2:&#x2F;&#x2F;, zlib:&#x2F;&#x2F;协议</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%C2%B7-zip-%E5%8D%8F%E8%AE%AE"><span class="nav-number">2.1.4.1.</span> <span class="nav-text">· zip:&#x2F;&#x2F;协议</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%C2%B7-bzip2-%E5%8D%8F%E8%AE%AE"><span class="nav-number">2.1.4.2.</span> <span class="nav-text">· bzip2:&#x2F;&#x2F;协议</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%C2%B7-zlib-%E5%8D%8F%E8%AE%AE"><span class="nav-number">2.1.4.3.</span> <span class="nav-text">· zlib:&#x2F;&#x2F;协议</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%80%E5%9B%BE%E4%BB%A5%E8%94%BD%E4%B9%8B"><span class="nav-number">2.1.5.</span> <span class="nav-text">一图以蔽之</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E2%85%A2-PHP%E5%8F%98%E9%87%8F%E8%A6%86%E7%9B%96%E6%BC%8F%E6%B4%9E"><span class="nav-number">3.</span> <span class="nav-text">Ⅲ. PHP变量覆盖漏洞</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Who</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">4</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Who</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/wanko.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"log":false});</script></body>
+</html>
