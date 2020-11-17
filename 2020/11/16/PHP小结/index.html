@@ -45,7 +45,7 @@
 <meta property="og:image" content="https://casio-3.github.io/2020/11/16/PHP%E5%B0%8F%E7%BB%93/9113969-bd535d8f8d7ca051.png">
 <meta property="og:image" content="https://casio-3.github.io/2020/11/16/PHP%E5%B0%8F%E7%BB%93/1.png">
 <meta property="article:published_time" content="2020-11-16T09:17:43.000Z">
-<meta property="article:modified_time" content="2020-11-16T11:30:00.475Z">
+<meta property="article:modified_time" content="2020-11-17T09:03:45.500Z">
 <meta property="article:author" content="Who">
 <meta property="article:tag" content="PHP">
 <meta name="twitter:card" content="summary">
@@ -191,10 +191,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2020-11-16 17:17:43 / 修改时间：19:30:00" itemprop="dateCreated datePublished" datetime="2020-11-16T17:17:43+08:00">2020-11-16</time>
+              <time title="创建时间：2020-11-16 17:17:43" itemprop="dateCreated datePublished" datetime="2020-11-16T17:17:43+08:00">2020-11-16</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-11-17 17:03:45" itemprop="dateModified" datetime="2020-11-17T17:03:45+08:00">2020-11-17</time>
+              </span>
 
           
 
@@ -272,7 +278,7 @@
 <td>当脚本尝试将对象调用为函数时触发</td>
 </tr>
 </tbody></table>
-<p>额外提一下**<em>__toString**</em>的具体触发场景：</p>
+<p>额外提一下<em>__toString</em>的具体触发场景：</p>
 <blockquote>
 <p>(1) echo($obj) / print($obj) 打印时会触发</p>
 <p>(2) 反序列化对象与字符串连接时</p>
@@ -326,9 +332,9 @@
 <p>挖掘反序列化漏洞的条件是：</p>
 <blockquote>
 <ol>
-<li><p>代码中有可利用的类，并且类中有**__wakeup()，__sleep()，__destruct()**这类特殊条件下可以自己调用的魔术方法。</p>
+<li><p>代码中有可利用的类，并且类中有 __wakeup()，__sleep()，__destruct()这类特殊条件下可以自己调用的魔术方法。</p>
 </li>
-<li><p>*unserialize()*函数的参数可控。</p>
+<li><p>unserialize()函数的参数可控。</p>
 </li>
 </ol>
 </blockquote>
@@ -372,7 +378,7 @@
 <p><img src="/2020/11/16/PHP%E5%B0%8F%E7%BB%93/%E6%8B%BC%E6%8E%A5.png" alt="拼接"></p>
 <h3 id="php原生类序列化（暂无了解）"><a href="#php原生类序列化（暂无了解）" class="headerlink" title="php原生类序列化（暂无了解）"></a>php原生类序列化（暂无了解）</h3><h2 id="Ⅱ-PHP伪协议与文件包含漏洞"><a href="#Ⅱ-PHP伪协议与文件包含漏洞" class="headerlink" title="Ⅱ. PHP伪协议与文件包含漏洞"></a>Ⅱ. PHP伪协议与文件包含漏洞</h2><h3 id="PHP中支持的伪协议"><a href="#PHP中支持的伪协议" class="headerlink" title="PHP中支持的伪协议"></a>PHP中支持的伪协议</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">file:<span class="comment">// — 访问本地文件系统</span></span><br><span class="line">http:<span class="comment">// — 访问 HTTP(s) 网址</span></span><br><span class="line">ftp:<span class="comment">// — 访问 FTP(s) URLs</span></span><br><span class="line">php:<span class="comment">// — 访问各个输入/输出流（I/O streams）</span></span><br><span class="line">zlib:<span class="comment">// — 压缩流</span></span><br><span class="line">data:<span class="comment">// — 数据（RFC 2397）</span></span><br><span class="line">glob:<span class="comment">// — 查找匹配的文件路径模式</span></span><br><span class="line">phar:<span class="comment">// — PHP 归档</span></span><br><span class="line">ssh2:<span class="comment">// — Secure Shell 2</span></span><br><span class="line">rar:<span class="comment">// — RAR</span></span><br><span class="line">ogg:<span class="comment">// — 音频流</span></span><br><span class="line">expect:<span class="comment">// — 处理交互式的流</span></span><br></pre></td></tr></table></figure>
 
-<p>跳转测试: <a href="#%E4%B8%80%E5%9B%BE%E4%BB%A5%E8%94%BD%E4%B9%8B">用法总结</a> &lt;在**Typora**中利用***anchor***跳转时按住**Ctrl**点击&gt;</p>
+<p>跳转测试: <a href="#%E4%B8%80%E5%9B%BE%E4%BB%A5%E8%94%BD%E4%B9%8B">用法总结</a> &lt;在Typora中利用anchor跳转时按住Ctrl点击&gt;</p>
 <h4 id="file-协议"><a href="#file-协议" class="headerlink" title="file://协议"></a>file://协议</h4><blockquote>
 <p>PHP.ini：<br>file:// 协议在双off的情况下也可以正常使用；<br>allow_url_fopen ：off/on<br>allow_url_include：off/on</p>
 </blockquote>
@@ -390,7 +396,7 @@
 </blockquote>
 <p><strong>php:// 访问各个输入/输出流（I/O streams），在CTF中经常使用的是php://filter和php://input，<u>php://filter用于读取源码，php://input用于执行php代码.</u></strong></p>
 <h5 id="·-php-filter"><a href="#·-php-filter" class="headerlink" title="· php://filter"></a>· php://filter</h5><blockquote>
-<p> <code>php://filter</code> 是一种元封装器， 设计用于数据流打开时的筛选过滤应用。 这对于一体式（all-in-one）的文件函数非常有用，类似 <strong>readfile()**、 **file()</strong> 和 **file_get_contents()**， 在数据流内容读取之前没有机会应用其他过滤器。</p>
+<p> <code>php://filter</code> 是一种元封装器， 设计用于数据流打开时的筛选过滤应用。 这对于一体式（all-in-one）的文件函数非常有用，类似 readfile()、 file() 和 file_get_contents()， 在数据流内容读取之前没有机会应用其他过滤器。</p>
 </blockquote>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">resource&#x3D;&lt;要过滤的数据流&gt;  这个参数是必须的。它指定了你要筛选过滤的数据流。</span><br><span class="line">read&#x3D;&lt;读链的筛选列表&gt;      该参数可选。可以设定一个或多个过滤器名称，以管道符（|）分隔。</span><br><span class="line">write&#x3D;&lt;写链的筛选列表&gt;     该参数可选。可以设定一个或多个过滤器名称，以管道符（|）分隔。</span><br><span class="line">&lt;;两个链的筛选列表&gt;        任何没有以 read&#x3D; 或 write&#x3D; 作前缀的筛选器列表会视情况应用于读或写链。</span><br></pre></td></tr></table></figure>
 
@@ -403,14 +409,14 @@
 
 <ul>
 <li><p>&lt;字符串过滤器&gt;</p>
-<p>*<em>string.**</em>是用来处理各个字符串的，比较像python的string模块.</p>
+<p>__string.*__是用来处理各个字符串的，比较像python的string模块.</p>
 </li>
 </ul>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">string</span>.rot13</span><br><span class="line">进行rot13转换</span><br><span class="line"><span class="keyword">string</span>.toupper</span><br><span class="line">将字符全部大写</span><br><span class="line"><span class="keyword">string</span>.tolower</span><br><span class="line">将字符全部小写</span><br><span class="line"><span class="keyword">string</span>.strip_tags</span><br><span class="line">去除空字符、HTML 和 PHP 标记后的结果。</span><br><span class="line">功能类似于strip_tags()函数，若不想某些字符不被消除，后面跟上字符，可利用字符串或是数组两种方式。</span><br></pre></td></tr></table></figure>
 
 <ul>
 <li><p>&lt;转换过滤器&gt;</p>
-<p>*<em>convert.**</em> 过滤器是<u>php5.0.0</u>以后添加的.</p>
+<p>__convert.*__过滤器是<u>php5.0.0</u>以后添加的.</p>
 </li>
 </ul>
 <p><img src="/2020/11/16/PHP%E5%B0%8F%E7%BB%93/9113969-2d480a43dbaa6085.png" alt="图片.png"></p>
@@ -441,7 +447,7 @@
 <p>payload:</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http:&#x2F;&#x2F;127.0.0.1&#x2F;xxx.php?a&#x3D;php:&#x2F;&#x2F;filter&#x2F;convert.base64-encode&#x2F;resource&#x3D;test.php</span><br></pre></td></tr></table></figure>
 
-<p>**file_get_contents()**的$filename参数不仅仅为文件路径，还可以是一个URL（伪协议）。<br>test.php的内容以base64编码的方式显示出来：<br><img src="/2020/11/16/PHP%E5%B0%8F%E7%BB%93/9113969-b5b4f36a6b7efc78.png" alt="图片.png"></p>
+<p>file_get_contents()的$filename参数不仅仅为文件路径，还可以是一个URL（伪协议）。<br>test.php的内容以base64编码的方式显示出来：<br><img src="/2020/11/16/PHP%E5%B0%8F%E7%BB%93/9113969-b5b4f36a6b7efc78.png" alt="图片.png"></p>
 <ol start="3">
 <li><a target="_blank" rel="noopener" href="https://www.w3school.com.cn/php/php_includes.asp">PHP include() 函数</a></li>
 </ol>
